@@ -1,10 +1,10 @@
 let canvas;
 let ctx;
-let world = new World();
-
+let world;
+let globalScaleFactor = 0.23;
 
 function init() {
     canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
-    console.log('My character is', world.character);
+    world = new World(canvas);
+    
 }
