@@ -1,0 +1,1 @@
+let globalScaleFactor = 0.23;
