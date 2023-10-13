@@ -5,7 +5,7 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
 
-    pressKey(key) {
+    pressKey(key) {      
         switch (key) {
             case 'ArrowLeft':
                 this.LEFT = true;
