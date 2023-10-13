@@ -4,8 +4,9 @@ class Keyboard {
     UP = false;
     DOWN = false;
     SPACE = false;
+    D = false;
 
-    pressKey(key) {      
+    pressKey(key) {
         switch (key) {
             case 'ArrowLeft':
                 this.LEFT = true;
@@ -21,6 +22,9 @@ class Keyboard {
                 break;
             case ' ':
                 this.SPACE = true;
+                break;
+            case 'd':
+                this.D = true;
                 break;
         }
     }
@@ -41,6 +45,9 @@ class Keyboard {
                 break;
             case ' ':
                 this.SPACE = false;
+                break;
+            case 'd':
+                this.D = false;
                 break;
         }
     }
