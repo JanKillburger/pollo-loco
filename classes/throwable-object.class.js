@@ -1,5 +1,7 @@
 class ThrowableObject extends MovableObject {
     energy = 5;
+    height = 400 * globalScaleFactor;
+    width = 400 * globalScaleFactor;
     IMAGES_ROTATION = [
         '../img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
         '../img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
