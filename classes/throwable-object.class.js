@@ -32,7 +32,6 @@ class ThrowableObject extends MovableObject {
                 this.speedY = 0;
                 this.speed = 0;
                 this.playAnimation(this.IMAGES_SPLASH);
-                console.log(this.currentImage);
                 //checks if last image of splashing animation is reached; if yes, stops interval and calls game over screen
                 if (((this.currentImage - 1) % this.IMAGES_SPLASH.length) + 1 === this.IMAGES_SPLASH.length) {
                     clearInterval(this.animationInterval);
