@@ -2,7 +2,7 @@ class MovableObject extends DrawableObject {
     speed = 0.05;
     oppositeDirection = false;
     speedY = 0;
-    accelerationY = 2.5;
+    accelerationY = 6;
     energy = 100;
     lastHit = 0;
     currentImage = 0;
@@ -14,7 +14,7 @@ class MovableObject extends DrawableObject {
 
     applyGravity() {
         setInterval(() => {
-            if (this.isAboveGround() || this.speedY < 0 || this instanceof ThrowableObject) {
+            if (this.isAboveGround() || this.speedY < 0 || this instanceof ThrowableObject || (this instanceof Endboss && this.isDead())) {
                 this.y += this.speedY;
                 this.speedY += this.accelerationY;
             }
@@ -29,7 +29,7 @@ class MovableObject extends DrawableObject {
     }
 
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof ThrowableObject) {
             ctx.beginPath();
             ctx.lineWidth = '1';
             ctx.strokeStyle = 'blue';
@@ -48,7 +48,7 @@ class MovableObject extends DrawableObject {
 
     jump() {
         this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
-        this.speedY = -10;
+        this.speedY = -40;
     }
 
     isColliding(obj) {

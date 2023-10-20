@@ -40,17 +40,29 @@ class World {
     }
 
     checkCollisions() {
+        //checks collisions of enemies with character
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && this.character.energy > 0) {
+            if (this.character.isColliding(enemy) && this.character.energy > 0 && !enemy.isDead()) {
                 this.character.isHit();
                 this.statusBarHealth.setPercentage(this.character.energy);
             }
+            //checks collisions of bottles with current enemy instance
+            this.throwableObjects.forEach((tO) => {
+                if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {
+                    enemy.isHit();
+                    tO.isHit();
+                    setTimeout(() => {
+                        this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
+                    }, 500);
+                }
+            })
         })
     }
 
     checkThrows() {
-        if (this.keyboard.D) {
+        if (this.keyboard.D && !this.character.isDead()) {
             const bottle = new ThrowableObject(this.character.x, this.character.oppositeDirection ? -1 : 1, this.character.y);
+            this.character.resetIdleState();
             this.throwableObjects.push(bottle);
         }
     }

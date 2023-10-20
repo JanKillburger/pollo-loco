@@ -1,4 +1,5 @@
 class ThrowableObject extends MovableObject {
+    energy = 5;
     IMAGES_ROTATION = [
         '../img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
         '../img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
@@ -19,7 +20,28 @@ class ThrowableObject extends MovableObject {
         this.loadImages(this.IMAGES_SPLASH);
         this.loadImage('../img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.throw(x, directionX, y);
+        this.animate();
     }
+
+    animate() {
+        this.animationInterval = setInterval(() => {
+            if (this.isDead()) {
+                this.accelerationY = 0;
+                this.speedY = 0;
+                this.speed = 0;
+                this.playAnimation(this.IMAGES_SPLASH);
+                console.log(this.currentImage);
+                //checks if last image of splashing animation is reached; if yes, stops interval and calls game over screen
+                if (((this.currentImage - 1) % this.IMAGES_SPLASH.length) + 1 === this.IMAGES_SPLASH.length) {
+                    clearInterval(this.animationInterval);
+                }
+            } else {
+                this.playAnimation(this.IMAGES_ROTATION);
+            }
+        }, globalMotionInterval);
+    }
+
+
 
     throw(startX, directionX, startY) {
         this.x = startX;
