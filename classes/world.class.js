@@ -36,12 +36,12 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrows();
-        }, 200);
+        }, globalMotionInterval);
     }
 
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
+            if (this.character.isColliding(enemy) && this.character.energy > 0) {
                 this.character.isHit();
                 this.statusBarHealth.setPercentage(this.character.energy);
             }

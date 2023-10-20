@@ -6,6 +6,7 @@ class MovableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
     currentImage = 0;
+    animationInterval;
 
     isAboveGround() {
         return this.y < 150;
@@ -17,7 +18,7 @@ class MovableObject extends DrawableObject {
                 this.y += this.speedY;
                 this.speedY += this.accelerationY;
             }
-        }, 1000 / 60);
+        }, globalMotionInterval);
     }
 
     playAnimation(images) {
@@ -46,7 +47,8 @@ class MovableObject extends DrawableObject {
     }
 
     jump() {
-        this.speedY = -30;
+        this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
+        this.speedY = -10;
     }
 
     isColliding(obj) {
@@ -59,12 +61,12 @@ class MovableObject extends DrawableObject {
 
     isHit() {
         this.energy -= 5; 
-        if (this.energy < 0) {
+        if (this.energy <= 0) {
             this.energy = 0;
+            this.currentImage = 0; //ensures that dying animation is played from the first image of the array
         } else {
             this.lastHit = new Date().getTime();
         }
-        return this.energy;
     }
 
     isDead() {
