@@ -80,10 +80,10 @@ class World {
     checkCollections() {
         this.level.collectableObjects.forEach((cO) => {
             if (this.character.isColliding(cO)) {
-                if (cO instanceof Coin) {
+                if (cO instanceof Coin && this.availableCoins < this.statusBarCoins.capacity) {
                     this.availableCoins++;
                     this.statusBarCoins.setPercentage(this.availableCoins);
-                } else if (cO instanceof Bottle) {
+                } else if (cO instanceof Bottle && this.availableBottles < this.statusBarBottles.capacity) {
                     this.availableBottles++;
                     this.statusBarBottles.setPercentage(this.availableBottles);
                 }
