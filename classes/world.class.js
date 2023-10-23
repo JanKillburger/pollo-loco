@@ -5,13 +5,17 @@ class World {
     level = level1;
     cameraX = 0;
     throwableObjects = [];
+    availableBottles = 3;
+    availableCoins = 0;
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.ctx = canvas.getContext('2d');
         this.character = new Character(this);
-        this.statusBarHealth = new StatusBar();
+        this.statusBarHealth = new HealthStatusbar(100, 100);
+        this.statusBarBottles = new BottleStatusbar(this.availableBottles, 6);
+        this.statusBarCoins = new CoinStatusbar(this.availableCoins, 10);
         this.draw();
         this.checkGameEvents();
         this.checkThrows();
@@ -24,9 +28,12 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
+        this.addObjectsToMap(this.level.collectableObjects);
         this.addToMap(this.character);
         this.ctx.translate(-this.cameraX, 0);
         this.statusBarHealth.draw(this.ctx);
+        this.statusBarBottles.draw(this.ctx);
+        this.statusBarCoins.draw(this.ctx);
         //Draw() wird immer wieder aufgerufen
         let self = this;
         requestAnimationFrame(function () { self.draw() });
@@ -36,6 +43,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrows();
+            this.checkCollections();
         }, globalMotionInterval);
     }
 
@@ -60,11 +68,28 @@ class World {
     }
 
     checkThrows() {
-        if (this.keyboard.D && !this.character.isDead()) {
+        if (this.keyboard.D && !this.character.isDead() && this.availableBottles > 0) {
             const bottle = new ThrowableObject(this.character.x, this.character.oppositeDirection ? -1 : 1, this.character.y);
             this.character.resetIdleState();
             this.throwableObjects.push(bottle);
+            this.availableBottles--;
+            this.statusBarBottles.setPercentage(this.availableBottles);
         }
+    }
+
+    checkCollections() {
+        this.level.collectableObjects.forEach((cO) => {
+            if (this.character.isColliding(cO)) {
+                if (cO instanceof Coin) {
+                    this.availableCoins++;
+                    this.statusBarCoins.setPercentage(this.availableCoins);
+                } else if (cO instanceof Bottle) {
+                    this.availableBottles++;
+                    this.statusBarBottles.setPercentage(this.availableBottles);
+                }
+                this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1);
+            }
+        })
     }
 
     addObjectsToMap(objects) {

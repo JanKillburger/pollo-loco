@@ -1,29 +1,25 @@
 class StatusBar extends DrawableObject {
-    percentage = 100;
-    IMAGES_HEALTH = [
-        '../img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
-        '../img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
-        '../img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
-        '../img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png',
-        '../img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
-        '../img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png'
-    ];
-
-    constructor() {
-        super().loadImages(this.IMAGES_HEALTH);
-        this.loadImage(this.IMAGES_HEALTH[5]);
+    currentValue = 100;
+    capacity;
+    IMAGES_STATUSBAR;
+    constructor(images, currentValue, capacity) {
+        super();
+        this.IMAGES_STATUSBAR = images;
+        this.loadImages(images);
         this.height = 158 * globalScaleFactor;
         this.width = 595 * globalScaleFactor;
         this.x = 20;
-        this.y = 20;
+        this.currentValue = currentValue;
+        this.capacity = capacity;
+        this.loadImage(this.IMAGES_STATUSBAR[this.resolveImgIndex()]);
     }
 
-    setPercentage(percentage) {
-        this.percentage = percentage;
-        this.img = this.imageCache[this.IMAGES_HEALTH[this.resolveImgIndex()]];
+    setPercentage(currentValue) {
+        this.currentValue = currentValue;
+        this.img = this.imageCache[this.IMAGES_STATUSBAR[this.resolveImgIndex()]];
     }
 
     resolveImgIndex() {
-        return Math.round(this.percentage / 20);
+        return Math.round(this.currentValue / this.capacity * (this.IMAGES_STATUSBAR.length - 1));
     }
 }
