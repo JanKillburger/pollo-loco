@@ -5,7 +5,7 @@ class World {
     level = level1;
     cameraX = 0;
     throwableObjects = [];
-    availableBottles = 3;
+    availableBottles = 6;
     availableCoins = 0;
 
     constructor(canvas, keyboard) {
@@ -79,15 +79,19 @@ class World {
 
     checkCollections() {
         this.level.collectableObjects.forEach((cO) => {
+            let isCollected = false;
             if (this.character.isColliding(cO)) {
+                debugger;
                 if (cO instanceof Coin && this.availableCoins < this.statusBarCoins.capacity) {
                     this.availableCoins++;
                     this.statusBarCoins.setPercentage(this.availableCoins);
+                    isCollected = true;
                 } else if (cO instanceof Bottle && this.availableBottles < this.statusBarBottles.capacity) {
                     this.availableBottles++;
                     this.statusBarBottles.setPercentage(this.availableBottles);
+                    isCollected = true;
                 }
-                this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1);
+                if (isCollected) {this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1);}
             }
         })
     }
