@@ -63,12 +63,15 @@ class Character extends MovableObject {
         '../img/2_character_pepe/1_idle/long_idle/I-20.png'
     ];
     world;
+    onCrushingCourseWith = [];
 
 
     constructor(world) {
         super().loadImage('../img/2_character_pepe/2_walk/W-21.png');
         this.world = world;
-        this.speed = 6;
+        this.offsetX = 20;
+        this.offsetY = 120;
+        this.speed = 20;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
@@ -104,7 +107,7 @@ class Character extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
-            if (!this.isAboveGround()  && (this.world.keyboard.UP || this.world.keyboard.SPACE)) {
+            if (!this.isAboveGround() && (this.world.keyboard.UP || this.world.keyboard.SPACE)) {
                 this.jump();
             }
             if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX) {
@@ -141,5 +144,23 @@ class Character extends MovableObject {
 
     handleKeyUp(key) {
         if (key == 'ArrowLeft' || key == 'ArrowRight') this.walkingSound.pause();
+    }
+
+    isCrushingEnemy(obj) {
+        return (this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) &&
+            (this.y /*+ this.offsetY*/ + this.height) >= obj.y && this.onCrushingCourseWith.indexOf(obj) != -1
+        //(this.y /*+ this.offsetY*/) <= (obj.y + obj.height)
+    }
+
+    checkCrushingCourse(obj) {
+        if ((this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) &&
+            (this.y /*+ this.offsetY*/ + this.height) < obj.y) {
+            if (this.onCrushingCourseWith.indexOf(obj) == -1) {
+                this.onCrushingCourseWith.push(obj);
+            }
+        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !((this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width)) &&
+            (this.y /*+ this.offsetY*/ + this.height) < obj.y) {
+            this.onCrushingCourseWith.splice(this.onCrushingCourseWith.indexOf(obj), 1);
+        }
     }
 }

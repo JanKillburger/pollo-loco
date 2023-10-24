@@ -3,6 +3,8 @@ class DrawableObject {
     y = 280;
     height = 150;
     width = 100;
+    offsetX = 0;
+    offsetY = 0;
     img;
     imageCache = [];
 
@@ -20,7 +22,7 @@ class DrawableObject {
             ctx.beginPath();
             ctx.lineWidth = '1';
             ctx.strokeStyle = 'blue';
-            ctx.rect(this.x, this.y, this.width, this.height);
+            ctx.rect(this.x + this.offsetX, this.y + this.offsetY, this.width - 2 * this.offsetX, this.height - this.offsetY);
             ctx.stroke();
         }
     }

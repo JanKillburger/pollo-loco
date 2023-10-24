@@ -38,7 +38,7 @@ class MovableObject extends DrawableObject {
 
     jump() {
         this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
-        this.speedY = -40;
+        this.speedY = -60;
     }
 
     isColliding(obj) {

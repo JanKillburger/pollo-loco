@@ -50,14 +50,23 @@ class World {
     checkCollisions() {
         //checks collisions of enemies with character
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && this.character.energy > 0 && !enemy.isDead()) {
+            if (this.character.isCrushingEnemy(enemy) && !enemy.isDead()) {
+                enemy.isHit();
+                this.character
+            } else if (this.character.isColliding(enemy) && this.character.energy > 0 && !enemy.isDead()) {
                 this.character.isHit();
                 this.statusBarHealth.setPercentage(this.character.energy);
             }
+            this.character.checkCrushingCourse(enemy);
             //checks collisions of bottles with current enemy instance
             this.throwableObjects.forEach((tO) => {
                 if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {
                     enemy.isHit();
+                    tO.isHit();
+                    setTimeout(() => {
+                        this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
+                    }, 600);
+                } else if (tO.y > 300 && !tO.isDead()) {
                     tO.isHit();
                     setTimeout(() => {
                         this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
@@ -81,7 +90,6 @@ class World {
         this.level.collectableObjects.forEach((cO) => {
             let isCollected = false;
             if (this.character.isColliding(cO)) {
-                debugger;
                 if (cO instanceof Coin && this.availableCoins < this.statusBarCoins.capacity) {
                     this.availableCoins++;
                     this.statusBarCoins.setPercentage(this.availableCoins);
