@@ -50,14 +50,13 @@ class World {
     checkCollisions() {
         //checks collisions of enemies with character
         this.level.enemies.forEach((enemy) => {
+            this.character.checkCrushingCourse(enemy);
             if (this.character.isCrushingEnemy(enemy) && !enemy.isDead()) {
                 enemy.isHit();
-                this.character
             } else if (this.character.isColliding(enemy) && this.character.energy > 0 && !enemy.isDead()) {
                 this.character.isHit();
                 this.statusBarHealth.setPercentage(this.character.energy);
             }
-            this.character.checkCrushingCourse(enemy);
             //checks collisions of bottles with current enemy instance
             this.throwableObjects.forEach((tO) => {
                 if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {

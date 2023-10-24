@@ -38,14 +38,13 @@ class MovableObject extends DrawableObject {
 
     jump() {
         this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
-        this.speedY = -60;
+        this.speedY = -50;
     }
 
     isColliding(obj) {
-        return (this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) &&
-            (this.y /*+ this.offsetY*/ + this.height) >= obj.y &&
-            (this.y /*+ this.offsetY*/) <= (obj.y + obj.height) //&&
-        //obj.onCollisionCourse; // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt. Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
+        return (this.x + this.width - this.offsetX) >= obj.x + obj.offsetX && this.x + this.offsetX <= (obj.x + obj.width - obj.offsetX) &&
+            (this.y + this.height) >= obj.y + obj.offsetY &&
+            (this.y + this.offsetY) <= (obj.y + obj.height)
 
     }
 

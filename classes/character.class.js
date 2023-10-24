@@ -71,7 +71,7 @@ class Character extends MovableObject {
         this.world = world;
         this.offsetX = 20;
         this.offsetY = 120;
-        this.speed = 20;
+        this.speed = 10;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
@@ -147,19 +147,18 @@ class Character extends MovableObject {
     }
 
     isCrushingEnemy(obj) {
-        return (this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) &&
-            (this.y /*+ this.offsetY*/ + this.height) >= obj.y && this.onCrushingCourseWith.indexOf(obj) != -1
-        //(this.y /*+ this.offsetY*/) <= (obj.y + obj.height)
+        return this.isColliding(obj) && this.onCrushingCourseWith.indexOf(obj) != -1
     }
 
     checkCrushingCourse(obj) {
-        if ((this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) &&
-            (this.y /*+ this.offsetY*/ + this.height) < obj.y) {
+        if ((this.x + this.width - this.offsetX) >= obj.x + obj.offsetX && this.x + this.offsetX <= (obj.x + obj.width - obj.offsetX) &&
+            (this.y + this.height) < obj.y + obj.offsetY) {
             if (this.onCrushingCourseWith.indexOf(obj) == -1) {
                 this.onCrushingCourseWith.push(obj);
             }
-        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !((this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width)) &&
-            (this.y /*+ this.offsetY*/ + this.height) < obj.y) {
+        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !((this.x + this.width - this.offsetX) >= obj.x + obj.offsetX && this.x + 
+        this.offsetX <= (obj.x + obj.width - obj.offsetX)) &&
+            (this.y /*+ this.offsetY*/ + this.height) < obj.y + obj.offsetY) {
             this.onCrushingCourseWith.splice(this.onCrushingCourseWith.indexOf(obj), 1);
         }
     }
