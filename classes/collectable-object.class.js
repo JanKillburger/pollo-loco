@@ -1,7 +1,7 @@
 class CollectableObject extends DrawableObject {
-    constructor(xRange, yRange) {
+    constructor(xStart, xRange, yStart, yRange) {
         super();
-        this.x = Math.random() * xRange;
-        this.y = Math.random() * yRange;
+        this.x = xStart + Math.random() * xRange;
+        this.y = yStart + Math.random() * yRange;
     }
 }

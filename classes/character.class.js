@@ -1,5 +1,5 @@
 class Character extends MovableObject {
-    y = 80;
+    y = 120;
     idleSince;
     isIdle = false;
     //absolute numbers are the original pixel sizes of image
@@ -69,9 +69,9 @@ class Character extends MovableObject {
     constructor(world) {
         super().loadImage('../img/2_character_pepe/2_walk/W-21.png');
         this.world = world;
-        this.offsetX = 20;
-        this.offsetY = 120;
+        this.offset = { top: 135, right: 40, bottom: 15, left: 25 };
         this.speed = 10;
+        this.damage = 1;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
@@ -88,6 +88,7 @@ class Character extends MovableObject {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.isIdle = false;
+                this.walkingSound.pause();
                 this.playAnimation(this.IMAGES_DEAD);
                 //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
                 if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
@@ -95,12 +96,15 @@ class Character extends MovableObject {
                 }
             } else if (this.isHurt()) {
                 this.resetIdleState();
+                this.walkingSound.pause();
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 this.resetIdleState();
+                this.walkingSound.pause();
                 this.playAnimation(this.IMAGES_JUMPING);
             } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.resetIdleState();
+                this.walkingSound.play();
                 this.playAnimation(this.IMAGES_WALKING);
             } else if (this.getIdleTime() > 5) {
                 this.playAnimation(this.IMAGES_LONG_IDLE);
@@ -139,7 +143,7 @@ class Character extends MovableObject {
     }
 
     handleKeyPress(key) {
-        if (key == 'ArrowLeft' || key == 'ArrowRight') this.walkingSound.play();
+        // if (key == 'ArrowLeft' || key == 'ArrowRight') this.walkingSound.play();
     }
 
     handleKeyUp(key) {
@@ -151,14 +155,14 @@ class Character extends MovableObject {
     }
 
     checkCrushingCourse(obj) {
-        if ((this.x + this.width - this.offsetX) >= obj.x + obj.offsetX && this.x + this.offsetX <= (obj.x + obj.width - obj.offsetX) &&
-            (this.y + this.height) < obj.y + obj.offsetY) {
+        if ((this.x + this.width - this.getOffset('right')) >= obj.x + obj.getOffset('left') && this.x + this.getOffset('left') <= (obj.x + obj.width - obj.getOffset('right')) &&
+            (this.y + this.height - this.offset.bottom) < obj.y + obj.offset.top) {
             if (this.onCrushingCourseWith.indexOf(obj) == -1) {
                 this.onCrushingCourseWith.push(obj);
             }
-        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !((this.x + this.width - this.offsetX) >= obj.x + obj.offsetX && this.x + 
-        this.offsetX <= (obj.x + obj.width - obj.offsetX)) &&
-            (this.y /*+ this.offsetY*/ + this.height) < obj.y + obj.offsetY) {
+        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !((this.x + this.width - this.getOffset('right')) >= obj.x + obj.getOffset('left') && this.x +
+            this.getOffset('left') <= (obj.x + obj.width - obj.getOffset('right'))) &&
+            (this.y + this.height - this.offset.bottom) < obj.y + obj.offset.top) {
             this.onCrushingCourseWith.splice(this.onCrushingCourseWith.indexOf(obj), 1);
         }
     }

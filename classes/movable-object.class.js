@@ -7,16 +7,21 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
     currentImage = 0;
     animationInterval;
+    damage = 5;
 
     isAboveGround() {
-        return this.y < 150;
+        return this.y + this.height < groundLevel;
     }
 
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY < 0 || this instanceof ThrowableObject || (this instanceof Endboss && this.isDead())) {
-                this.y += this.speedY;
-                this.speedY += this.accelerationY;
+                this.y = Math.min(this.y + this.speedY, groundLevel - this.height);
+                if (this.y == groundLevel - this.height) {
+                    this.speedY = 0;
+                } else {
+                    this.speedY += this.accelerationY;
+                }
             }
         }, globalMotionInterval);
     }
@@ -38,18 +43,18 @@ class MovableObject extends DrawableObject {
 
     jump() {
         this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
-        this.speedY = -50;
+        this.speedY = -40;
     }
 
     isColliding(obj) {
-        return (this.x + this.width - this.offsetX) >= obj.x + obj.offsetX && this.x + this.offsetX <= (obj.x + obj.width - obj.offsetX) &&
-            (this.y + this.height) >= obj.y + obj.offsetY &&
-            (this.y + this.offsetY) <= (obj.y + obj.height)
+        return (this.x + this.width - this.getOffset('right')) >= obj.x + obj.getOffset('left') && this.x + this.getOffset('left') <= (obj.x + obj.width - obj.getOffset('right')) &&
+            (this.y + this.height - this.offset.bottom) >= obj.y + obj.offset.top &&
+            (this.y + this.offset.top) <= (obj.y + obj.height - obj.offset.bottom)
 
     }
 
     isHit() {
-        this.energy -= 5; 
+        this.energy -= this.damage;
         if (this.energy <= 0) {
             this.energy = 0;
             this.currentImage = 0; //ensures that dying animation is played from the first image of the array
@@ -64,6 +69,6 @@ class MovableObject extends DrawableObject {
 
     isHurt() {
         let timePassed = (new Date().getTime() - this.lastHit) / 1000;
-        return timePassed < 1 ;
+        return timePassed < 1;
     }
 }

@@ -48,24 +48,29 @@ class World {
     }
 
     checkCollisions() {
-        //checks collisions of enemies with character
         this.level.enemies.forEach((enemy) => {
+            //stores the enemies the character is above (used in isCrushingEnemy function)
             this.character.checkCrushingCourse(enemy);
+            //checks if character is jumping on an enemy
             if (this.character.isCrushingEnemy(enemy) && !enemy.isDead()) {
                 enemy.isHit();
-            } else if (this.character.isColliding(enemy) && this.character.energy > 0 && !enemy.isDead()) {
+            }
+            //checks if character is hit by enemy
+            else if (this.character.isColliding(enemy) && !this.character.isDead() && !enemy.isDead()) {
                 this.character.isHit();
                 this.statusBarHealth.setPercentage(this.character.energy);
             }
-            //checks collisions of bottles with current enemy instance
+            //checks collisions of bottles with current enemy instance or ground
             this.throwableObjects.forEach((tO) => {
                 if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {
+                    tO.bottleCrash.play();
                     enemy.isHit();
                     tO.isHit();
                     setTimeout(() => {
                         this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
                     }, 600);
-                } else if (tO.y > 300 && !tO.isDead()) {
+                } else if (tO.y + tO.height >= groundLevel && !tO.isDead()) {
+                    tO.bottleCrash.play();
                     tO.isHit();
                     setTimeout(() => {
                         this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
@@ -112,7 +117,7 @@ class World {
             this.flipImage(mo);
         }
         mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
+        // mo.drawFrame(this.ctx);
         if (mo.oppositeDirection) {
             this.flipImageBack(mo);
         }

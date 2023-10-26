@@ -3,8 +3,12 @@ class DrawableObject {
     y = 280;
     height = 150;
     width = 100;
-    offsetX = 0;
-    offsetY = 0;
+    offset = {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+    };
     img;
     imageCache = [];
 
@@ -18,13 +22,11 @@ class DrawableObject {
     }
 
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof ThrowableObject || this instanceof CollectableObject) {
-            ctx.beginPath();
-            ctx.lineWidth = '1';
-            ctx.strokeStyle = 'blue';
-            ctx.rect(this.x + this.offsetX, this.y + this.offsetY, this.width - 2 * this.offsetX, this.height - this.offsetY);
-            ctx.stroke();
-        }
+        ctx.beginPath();
+        ctx.lineWidth = '1';
+        ctx.strokeStyle = 'blue';
+        ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.width - this.offset.left - this.offset.right, this.height - this.offset.top - this.offset.bottom);
+        ctx.stroke();
     }
 
     draw(ctx) {
@@ -37,5 +39,13 @@ class DrawableObject {
             img.src = path;
             this.imageCache[path] = img;
         });
+    }
+
+    getOffset(side) {
+        if ((side === 'left' || side === 'right') && this.oppositeDirection) {
+            return side === 'left' ? this.offset.right : this.offset.left;
+        } else {
+            return this.offset[side];
+        }
     }
 }

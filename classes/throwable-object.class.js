@@ -16,13 +16,16 @@ class ThrowableObject extends MovableObject {
         '../img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
         '../img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
     ];
+    bottleCrash = new Audio('../audio/bottleCrash.mp3');
 
     constructor(x, directionX, y) {
         super().loadImages(this.IMAGES_ROTATION);
         this.loadImages(this.IMAGES_SPLASH);
         this.loadImage('../img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
+        this.offset = {top: 20, right: 20, bottom: 20, left: 20};
         this.throw(x, directionX, y);
         this.animate();
+        this.bottleCrash.currentTime = 0.5;
     }
 
     animate() {
