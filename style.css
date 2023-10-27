@@ -1,46 +1,94 @@
 @font-face {
-    font-display: swap;
-    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: "Zabars";
-    font-style: normal;
-    font-weight: 400;
-    src: url("./assets/Zabars.ttf") format("truetype");
-    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-  }
+  font-display: swap;
+  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Zabars';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./assets/Zabars.ttf') format('truetype');
+  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+root {
+  font-size: 1em; /*usually evaluates to 16px; adjust to set basic font-size (xem with x = (desired basic font size in px)/(16 px); all other font-sizes in rem*/
+  box-sizing: border-box;
+}
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+/*use following template if any third-party components are used that require box-sizing: content-box	
+    .third-party-component {	
+    box-sizing: content-box;	}*/
+
 body {
-    font-family: "Zabars";
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0; 
-    background-image: url(./img/background-img.svg);
-    background-size: cover;
-    background-position: center;
+  font-family: 'Zabars';
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: url(./img/background-img.svg);
+  background-size: cover;
+  background-position: center;
 }
 
 h1 {
-    font-size: 3em;
+  font-size: 3em;
 }
 
 canvas {
-    background-color: black;
-    display: block;
-    margin: 0;
-    padding: 0;
+  background-color: black;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.control-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#top-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#top-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#bottom-left {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.fullscreen {
+    position: relative;
 }
 
 @media only screen and (max-width: 720px) {
-    canvas {
-        width: 100%;
-    }
+  canvas {
+    width: 100%;
+  }
 }
 
-@media only screen  and (max-height: 480px) {
-    canvas {
-        height: 100vh;
-    }
+@media only screen and (max-height: 480px) {
+  canvas {
+    height: 100vh;
+  }
 }
-
-
