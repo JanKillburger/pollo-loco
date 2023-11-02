@@ -78,7 +78,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONG_IDLE);
-        this.walkingSound = new Audio('audio/characterWalking.mp3');
+        this.walkingSound = new Audio('./audio/characterWalking.mp3');
         this.walkingSound.loop = true;
         this.applyGravity();
         this.animate();
@@ -86,47 +86,60 @@ class Character extends MovableObject {
 
     animate() {
         this.animationInterval = setStoppableInterval(() => {
-            if (this.isDead()) {
-                this.isIdle = false;
-                this.walkingSound.pause();
-                this.playAnimation(this.IMAGES_DEAD);
-                //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
-                if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
-                    stopInterval(this.animationInterval);
-                    showGameOverScreen('failure');
-                }
-            } else if (this.isHurt()) {
-                this.resetIdleState();
-                this.walkingSound.pause();
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.isAboveGround()) {
-                this.resetIdleState();
-                this.walkingSound.pause();
-                this.playAnimation(this.IMAGES_JUMPING);
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.resetIdleState();
-                this.walkingSound.play();
-                this.playAnimation(this.IMAGES_WALKING);
-            } else if (this.getIdleTime() > 5) {
-                this.playAnimation(this.IMAGES_LONG_IDLE);
-            } else {
-                this.walkingSound.pause();
-                this.playAnimation(this.IMAGES_IDLE);
-            }
-            if (!this.isAboveGround() && (this.world.keyboard.UP || this.world.keyboard.SPACE)) {
-                this.jump();
-            }
-            if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX) {
-                this.oppositeDirection = false;
-                this.moveRight();
-                this.world.cameraX -= this.speed;
-            }
-            if (this.world.keyboard.LEFT && this.x > 0) {
-                this.oppositeDirection = true;
-                this.moveLeft();
-                this.world.cameraX += this.speed;
-            }
+            this.handleAnimation();
+            this.handleMotion();
         }, globalMotionInterval);
+    }
+
+    handleAnimation() {
+        if (this.isDead()) { this.handleDeadState() }
+        else if (this.isHurt()) { this.handleState(this.IMAGES_HURT, false); }
+        else if (this.isAboveGround()) { this.handleState(this.IMAGES_JUMPING, true); }
+        else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) { this.handleWalkAnimation(); }
+        else if (this.getIdleTime() > 5) { this.playAnimation(this.IMAGES_LONG_IDLE); }
+        else {
+            this.walkingSound.pause();
+            this.playAnimation(this.IMAGES_IDLE);
+        }
+    }
+
+    handleWalkAnimation() {
+        this.resetIdleState();
+        this.walkingSound.play();
+        this.playAnimation(this.IMAGES_WALKING);
+    }
+
+    handleMotion() {
+        if (!this.isAboveGround() && (this.world.keyboard.UP || this.world.keyboard.SPACE)) {
+            this.jump();
+        }
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX) {
+            this.oppositeDirection = false;
+            this.moveRight();
+            this.world.cameraX -= this.speed;
+        }
+        if (this.world.keyboard.LEFT && this.x > 0) {
+            this.oppositeDirection = true;
+            this.moveLeft();
+            this.world.cameraX += this.speed;
+        }
+    }
+
+    handleState(stateArray, stopSound) {
+        this.resetIdleState();
+        if (stopSound) this.walkingSound.pause();
+        this.playAnimation(stateArray);
+    }
+
+    handleDeadState() {
+        this.isIdle = false;
+        this.walkingSound.pause();
+        this.playAnimation(this.IMAGES_DEAD);
+        //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
+        if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
+            stopInterval(this.animationInterval);
+            handleGameOver('failure');
+        }
     }
 
     resetIdleState() {
@@ -144,24 +157,17 @@ class Character extends MovableObject {
         }
     }
 
-    handleTouchEnd(ev) {
-        debugger;
-        if(ev.id == 'mobile-left' || ev.id == 'mobile-right') this.walkingSound.pause();
-    }
-
     isCrushingEnemy(obj) {
         return this.isColliding(obj) && this.onCrushingCourseWith.indexOf(obj) != -1
     }
 
     checkCrushingCourse(obj) {
-        if ((this.x + this.width - this.getOffset('right')) >= obj.x + obj.getOffset('left') && this.x + this.getOffset('left') <= (obj.x + obj.width - obj.getOffset('right')) &&
-            (this.y + this.height - this.offset.bottom) < obj.y + obj.offset.top) {
+        if (this.hasCoverageX(obj) && this.isAbove(obj)) {
             if (this.onCrushingCourseWith.indexOf(obj) == -1) {
                 this.onCrushingCourseWith.push(obj);
             }
-        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !((this.x + this.width - this.getOffset('right')) >= obj.x + obj.getOffset('left') && this.x +
-            this.getOffset('left') <= (obj.x + obj.width - obj.getOffset('right'))) &&
-            (this.y + this.height - this.offset.bottom) < obj.y + obj.offset.top) {
+        } else if (this.onCrushingCourseWith.indexOf(obj) != -1 && !this.hasCoverageX(obj) &&
+            this.isAbove(obj)) {
             this.onCrushingCourseWith.splice(this.onCrushingCourseWith.indexOf(obj), 1);
         }
     }

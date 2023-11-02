@@ -1,5 +1,5 @@
-let canvas;
-let ctx;
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
 let world;
 let keyboard = new Keyboard();
 let startScreen = document.getElementById('start-screen-img');
@@ -9,7 +9,6 @@ let intervalIds = [];
 let usesTouchscreen = false;
 
 function init() {
-    canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard, intervalIds);
     window.addEventListener('keydown', (event) => {
         event.preventDefault();
@@ -28,10 +27,10 @@ function init() {
 }
 
 
-function showGameOverScreen(type) {
+function handleGameOver(screenType) {
     stopIntervals();
     endScreen.classList.add('active');
-    switch (type) {
+    switch (screenType) {
         case 'success':
             endScreen.src = './img/9_intro_outro_screens/game_over/game over.png';
             break;
@@ -72,10 +71,6 @@ function toggleFullscreen() {
     }
 }
 
-window.addEventListener('keydown', (ev) => {
-    ev.preventDefault();
-})
-
 function calculateVerticalScrollbarWidth() {
     document.documentElement.style.setProperty(
         '--scrollbar-width',
@@ -83,8 +78,14 @@ function calculateVerticalScrollbarWidth() {
     );
 }
 
+window.addEventListener('keydown', (ev) => {
+    ev.preventDefault();
+})
+
 window.addEventListener('DOMContentLoaded', calculateVerticalScrollbarWidth, false);
+
 window.addEventListener('resize', calculateVerticalScrollbarWidth, false);
+
 window.addEventListener('load', calculateVerticalScrollbarWidth, false);
 
 window.addEventListener('touchstart', function onFirstTouch() {

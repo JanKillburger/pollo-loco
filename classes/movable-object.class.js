@@ -47,10 +47,7 @@ class MovableObject extends DrawableObject {
     }
 
     isColliding(obj) {
-        return (this.x + this.width - this.getOffset('right')) >= obj.x + obj.getOffset('left') && this.x + this.getOffset('left') <= (obj.x + obj.width - obj.getOffset('right')) &&
-            (this.y + this.height - this.offset.bottom) >= obj.y + obj.offset.top &&
-            (this.y + this.offset.top) <= (obj.y + obj.height - obj.offset.bottom)
-
+        return this.hasCoverageX(obj) && this.hasCoverageY(obj)
     }
 
     isHit() {
@@ -70,5 +67,19 @@ class MovableObject extends DrawableObject {
     isHurt() {
         let timePassed = (new Date().getTime() - this.lastHit) / 1000;
         return timePassed < 1;
+    }
+
+    hasCoverageX(obj) {
+        return ((this.x + this.width - this.getOffset('right')) >= (obj.x + obj.getOffset('left')) &&
+        (this.x + this.getOffset('left')) <= (obj.x + obj.width - obj.getOffset('right')))
+    }
+
+    hasCoverageY(obj) {
+        return (this.y + this.height - this.offset.bottom) >= obj.y + obj.offset.top &&
+            (this.y + this.offset.top) <= (obj.y + obj.height - obj.offset.bottom)
+    }
+
+    isAbove(obj) {
+        return (this.y + this.height - this.offset.bottom) < obj.y + obj.offset.top
     }
 }

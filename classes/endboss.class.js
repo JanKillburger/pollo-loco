@@ -49,7 +49,7 @@ class Endboss extends MovableObject {
         this.x = 700;
         this.damage = 10;
         this.animate();
-        this.offset = {top: 20, right: 25, bottom: 20, left: 25};
+        this.offset = { top: 20, right: 25, bottom: 20, left: 25 };
     }
 
     animate() {
@@ -58,10 +58,7 @@ class Endboss extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
                 //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
                 if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
-                    this.speedY = 5;
-                    this.applyGravity();
-                    stopInterval(this.animationInterval);
-                    showGameOverScreen('success');
+                    this.handleDeadState();
                 }
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURTING);
@@ -70,5 +67,10 @@ class Endboss extends MovableObject {
             }
         }, globalMotionInterval);
 
+    }
+
+    handleDeadState() {
+        stopInterval(this.animationInterval);
+        handleGameOver('success');
     }
 }

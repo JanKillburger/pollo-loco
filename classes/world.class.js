@@ -7,6 +7,7 @@ class World {
     throwableObjects = [];
     availableBottles = 6;
     availableCoins = 0;
+    sounds = [];
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -21,6 +22,8 @@ class World {
         this.checkGameEvents();
         this.checkThrows();
     }
+
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -53,38 +56,44 @@ class World {
         this.level.enemies.forEach((enemy) => {
             //stores the enemies the character is above (used in isCrushingEnemy function)
             this.character.checkCrushingCourse(enemy);
-            //checks if character is jumping on an enemy
-            if (this.character.isCrushingEnemy(enemy) && !enemy.isDead()) {
-                enemy.isHit();
-            }
-            //checks if character is hit by enemy
-            else if (this.character.isColliding(enemy) && !this.character.isDead() && !enemy.isDead()) {
-                this.character.isHit();
-                if (this.character.energy == 0) {
-                }
-                this.statusBarHealth.setPercentage(this.character.energy);
-            }
+            //checks if character and enemy are colliding
+            this.handleCharacterCollision(enemy);
             //checks collisions of bottles with current enemy instance or ground
             this.throwableObjects.forEach((tO) => {
                 if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {
-                    tO.bottleCrash.play();
-                    enemy.isHit();
-                    tO.isHit();
-                    setTimeout(() => {
-                        this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
-                    }, 600);
-                    if (enemy instanceof Endboss) {
-                        this.statusBarEndboss.setPercentage(enemy.energy);
-                    }
+                    this.destroyBottle(tO);
+                    this.handleEnemyDamage(enemy);
                 } else if (tO.y + tO.height >= groundLevel && !tO.isDead()) {
-                    tO.bottleCrash.play();
-                    tO.isHit();
-                    setTimeout(() => {
-                        this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
-                    }, 500);
+                    this.destroyBottle(tO);
                 }
             })
         })
+    }
+
+    handleEnemyDamage(enemy) {
+        enemy.isHit();
+        if (enemy instanceof Endboss) {
+            this.statusBarEndboss.setPercentage(enemy.energy);
+        }
+    }
+
+    handleCharacterCollision(enemy) {
+        if (this.character.isCrushingEnemy(enemy) && !enemy.isDead()) {
+            enemy.isHit();
+        }
+        //checks if character is hit by enemy
+        else if (this.character.isColliding(enemy) && !this.character.isDead() && !enemy.isDead()) {
+            this.character.isHit();
+            this.statusBarHealth.setPercentage(this.character.energy);
+        }
+    }
+
+    destroyBottle(tO) {
+        tO.bottleCrash.play();
+        tO.isHit();
+        setTimeout(() => {
+            this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
+        }, 600);
     }
 
     checkThrows() {
@@ -110,7 +119,7 @@ class World {
                     this.statusBarBottles.setPercentage(this.availableBottles);
                     isCollected = true;
                 }
-                if (isCollected) {this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1);}
+                if (isCollected) { this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1); }
             }
         })
     }
