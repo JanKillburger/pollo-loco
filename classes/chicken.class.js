@@ -18,13 +18,17 @@ class Chicken extends MovableObject {
         this.x = 400 + Math.random() * 500;
         this.speed = 0.15 + Math.random() * 0.25;
         this.animate();
+        this.alarmSound = new Audio('./audio/smallChickenAlarm.mp3');
     }
 
     animate() {
-        setStoppableInterval(() => {
+        this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
+                this.alarmSound.play();
+                stopInterval(this.animationInterval);
             } else {
+                
                 this.playAnimation(this.IMAGES_WALKING);
                 this.moveLeft();
             }
