@@ -2,7 +2,7 @@ class World {
     canvas;
     keyboard;
     ctx;
-    level = level1;
+    level = initLevel1();
     cameraX = 0;
     throwableObjects = [];
     availableBottles = 6;
@@ -14,6 +14,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.character = new Character(this);
         this.statusBarHealth = new HealthStatusbar(100, 100);
+        this.statusBarEndboss = new EndbossStatusbar(100, 100);
         this.statusBarBottles = new BottleStatusbar(this.availableBottles, 6);
         this.statusBarCoins = new CoinStatusbar(this.availableCoins, 10);
         this.draw();
@@ -32,6 +33,7 @@ class World {
         this.addToMap(this.character);
         this.ctx.translate(-this.cameraX, 0);
         this.statusBarHealth.draw(this.ctx);
+        this.statusBarEndboss.draw(this.ctx);
         this.statusBarBottles.draw(this.ctx);
         this.statusBarCoins.draw(this.ctx);
         //Draw() wird immer wieder aufgerufen
@@ -58,6 +60,8 @@ class World {
             //checks if character is hit by enemy
             else if (this.character.isColliding(enemy) && !this.character.isDead() && !enemy.isDead()) {
                 this.character.isHit();
+                if (this.character.energy == 0) {
+                }
                 this.statusBarHealth.setPercentage(this.character.energy);
             }
             //checks collisions of bottles with current enemy instance or ground
@@ -69,6 +73,9 @@ class World {
                     setTimeout(() => {
                         this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
                     }, 600);
+                    if (enemy instanceof Endboss) {
+                        this.statusBarEndboss.setPercentage(enemy.energy);
+                    }
                 } else if (tO.y + tO.height >= groundLevel && !tO.isDead()) {
                     tO.bottleCrash.play();
                     tO.isHit();

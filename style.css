@@ -11,6 +11,7 @@
 root {
   font-size: 1em; /*usually evaluates to 16px; adjust to set basic font-size (xem with x = (desired basic font size in px)/(16 px); all other font-sizes in rem*/
   box-sizing: border-box;
+  --scrollbar-width: 0px;
 }
 *,
 ::before,
@@ -23,26 +24,56 @@ root {
 
 body {
   font-family: 'Zabars';
+  font-size: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
   margin: 0;
-  padding: 0;
+  /* padding-inline: 2vw; */
   background-image: url(./img/background-img.svg);
   background-size: cover;
   background-position: center;
+  overflow: auto;
 }
 
 h1 {
-  font-size: 3em;
+  font-size: 5rem;
+  margin-block: 1rem;
+  text-align: center;
+}
+
+button {
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  background-color: rgb(244, 164, 96);
+  border-radius: 0.3em;
+  padding: 0.3em;
+  transition: width 0.5s;
+}
+
+button:hover {
+ transform: scale(1.1) translate(-50%,0);
+ cursor: pointer;
+}
+
+.fullscreen {
+  position: relative;
+  background-color: sandybrown;
 }
 
 canvas {
-  background-color: black;
+  background-color: sandybrown;
   display: block;
   margin: 0;
-  padding: 0;
+  padding: 0; 
+  margin-inline: auto;
+}
+
+canvas.fullscreen-enabled {
+  height: 100vh;
+  width: calc(100vh * 1.5);
 }
 
 .control-overlay {
@@ -53,42 +84,112 @@ canvas {
   bottom: 0;
 }
 
-#top-left {
-    position: absolute;
-    top: 0;
-    left: 0;
+.mobile-control {
+  width: 32px;
+  padding: 16px;
+  border-radius: 32px;
+  background-color: rgb(240, 164, 24);
 }
 
-#top-right {
-    position: absolute;
-    top: 0;
-    right: 0;
+.mobile-control:active {
+  background-color: rgba(240, 164, 24, 0.3);
 }
 
-#bottom-left {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+#mobile-left {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
 }
 
-#bottom-right {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+#mobile-right {
+  position: absolute;
+  bottom: 16px;
+  left: 100px;
 }
 
-.fullscreen {
-    position: relative;
+#mobile-jump {
+  position: absolute;
+  bottom: 16px;
+  right: 200px;
 }
 
-@media only screen and (max-width: 720px) {
+#mobile-throw {
+  position: absolute;
+  bottom: 16px;
+  right: 100px;
+}
+
+.start-screen-img {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right;
+  visibility: hidden;
+}
+
+.end-screen-img {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  visibility: hidden;
+}
+
+.start-screen-img.fullscreen-enabled,
+.end-screen-img.fullscreen-enabled {
+  left: 0;
+}
+
+.active {
+  visibility: visible;
+}
+
+.start-game {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translate(-50%,0);
+}
+
+#toggle-fullscreen {
+  width: 48px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+.game-instructions {
+  padding-inline-start: 2vw;
+}
+
+.game-instruction {
+  margin-right: 2em;
+  /* display: block; */
+}
+
+@media (max-width: 720px) {
   canvas {
     width: 100%;
   }
 }
 
-@media only screen and (max-height: 480px) {
+@media (max-height: 480px) {
   canvas {
     height: 100vh;
   }
+}
+
+@media (max-aspect-ratio: 1.5) {
+  canvas.fullscreen-enabled {
+    height: calc(100vw * 2 / 3  - var(--scrollbar-width));
+    width: 100vw  - var(--scrollbar-width);
+  }
+}
+
+.d-none {
+  display: none;
 }

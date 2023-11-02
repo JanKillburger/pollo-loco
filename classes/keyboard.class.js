@@ -5,7 +5,9 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
     D = false;
-
+    constructor() {
+        this.addMobileControlsEvents();
+    }
     pressKey(key) {
         switch (key) {
             case 'ArrowLeft':
@@ -50,5 +52,40 @@ class Keyboard {
                 this.D = false;
                 break;
         }
+    }
+
+    addMobileControlsEvents() {
+        document.getElementById('mobile-left').addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
+            this.LEFT = true;
+        });
+        document.getElementById('mobile-left').addEventListener('touchend', (ev) => {
+            ev.preventDefault();
+            this.LEFT = false;
+        });
+        document.getElementById('mobile-right').addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
+            this.RIGHT = true;
+        });
+        document.getElementById('mobile-right').addEventListener('touchend', (ev) => {
+            ev.preventDefault();
+            this.RIGHT = false;
+        });
+        document.getElementById('mobile-jump').addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
+            this.UP = true;
+        });
+        document.getElementById('mobile-jump').addEventListener('touchend', (ev) => {
+            ev.preventDefault();
+            this.UP = false;
+        });
+        document.getElementById('mobile-throw').addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
+            this.D = true;
+        });
+        document.getElementById('mobile-throw').addEventListener('touchend', (ev) => {
+            ev.preventDefault();
+            this.D = false;
+        });
     }
 }

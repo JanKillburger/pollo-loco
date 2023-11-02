@@ -9,43 +9,79 @@
       type="image/x-icon"
     />
     <link rel="stylesheet" href="style.css" />
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <script src="js/gameVariables.js" defer></script>
-    <script src="classes/drawable-object.class.js" defer></script>
-    <script src="classes/collectable-object.class.js" defer></script>
-    <script src="classes/coin.class.js" defer></script>
-    <script src="classes/bottle.class.js" defer></script>
-    <script src="classes/movable-object.class.js" defer></script>
-    <script src="classes/throwable-object.class.js" defer></script>
-    <script src="classes/status-bar.class.js" defer></script>
-    <script src="classes/health-status-bar.class.js" defer></script>
-    <script src="classes/bottle-status-bar.class.js" defer></script>
-    <script src="classes/coin-status-bar.class.js" defer></script>
-    <script src="classes/cloud.class.js" defer></script>
-    <script src="classes/character.class.js" defer></script>
-    <script src="classes/chicken.class.js" defer></script>
-    <script src="classes/small-chicken.class.js" defer></script>
-    <script src="classes/world.class.js" defer></script>
-    <script src="classes/background-object.class.js" defer></script>
-    <script src="classes/keyboard.class.js" defer></script>
-    <script src="classes/level.class.js" defer></script>
-    <script src="classes/endboss.class.js" defer></script>
-    <script src="levels/level1.js" defer></script>
-    <script src="js/game.js" defer></script>
+    <script src="./js/gameVariables.js" defer></script>
+    <script src="./classes/drawable-object.class.js" defer></script>
+    <script src="./classes/collectable-object.class.js" defer></script>
+    <script src="./classes/coin.class.js" defer></script>
+    <script src="./classes/bottle.class.js" defer></script>
+    <script src="./classes/movable-object.class.js" defer></script>
+    <script src="./classes/throwable-object.class.js" defer></script>
+    <script src="./classes/status-bar.class.js" defer></script>
+    <script src="./classes/health-status-bar.class.js" defer></script>
+    <script src="./classes/endboss-status-bar.class.js" defer></script>
+    <script src="./classes/bottle-status-bar.class.js" defer></script>
+    <script src="./classes/coin-status-bar.class.js" defer></script>
+    <script src="./classes/cloud.class.js" defer></script>
+    <script src="./classes/character.class.js" defer></script>
+    <script src="./classes/chicken.class.js" defer></script>
+    <script src="./classes/small-chicken.class.js" defer></script>
+    <script src="./classes/world.class.js" defer></script>
+    <script src="./classes/background-object.class.js" defer></script>
+    <script src="./classes/keyboard.class.js" defer></script>
+    <script src="./classes/level.class.js" defer></script>
+    <script src="./classes/endboss.class.js" defer></script>
+    <script src="./levels/level1.js" defer></script>
+    <script src="./js/game.js" defer></script>
 
     <title>El Pollo Loco</title>
   </head>
-  <body onload="init()">
+  <body>
     <h1>El pollo loco</h1>
-    <div id="fullscreen" class='fullscreen'>
+    <div id="fullscreen" class="fullscreen">
       <canvas id="canvas" width="720" height="480"></canvas>
-      <div id="control-overlay" class='control-overlay'>
-        <button id="top-left">Start game</button>
-        <button id="top-right">Start game</button>
-        <button id="bottom-left">Start game</button>
-        <button id="bottom-right">Start game</button>
+      <img
+        id="start-screen-img"
+        class="start-screen-img active"
+        src="./img/9_intro_outro_screens/start/startscreen_1.png"
+      />
+      <img id="end-screen-img" class="end-screen-img" />
+      <div id="control-overlay" class="control-overlay">
+        <button class="start-game" onclick="init()">Start game</button>
+        <img
+          src="./img/arrow-up.png"
+          id="mobile-jump"
+          class="mobile-control d-none"
+        /><img
+          src="./img/left-chevron.png"
+          id="mobile-left"
+          class="mobile-control d-none"
+        /><img
+          src="./img/right-chevron.png"
+          id="mobile-right"
+          class="mobile-control d-none"
+        /><img
+          src="./img/wine-bottle.png"
+          id="mobile-throw"
+          class="mobile-control d-none"
+        />
+        <img
+          id="toggle-fullscreen"
+          src="./img/enable-fullscreen.png"
+          alt="enable fullscreen"
+          onclick="toggleFullscreen()"
+        />
       </div>
+    </div>
+    <div class="game-instructions">
+      <h2>Game instructions</h2>
+      <span class="game-instruction">Arrow Left/Right: Walk</span>
+      <span class="game-instruction">Arrow Up/Space: Jump</span>
+      <span class="game-instruction">D: Throw Bottle</span>
+      <p>
+        Normal and small chicken can be defeated by throwing a bottle or jumping
+        on them. Endboss can be defeated by throwing bottles.
+      </p>
     </div>
   </body>
 </html>
