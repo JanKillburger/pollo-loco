@@ -53,6 +53,20 @@ button {
   transition: width 0.5s;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#back-button {
+  margin-block-start: 3em;
+  font-size: 1.5em;
+}
+
 button:hover {
  transform: scale(1.1) translate(-50%,0);
  cursor: pointer;

@@ -7,7 +7,7 @@ let endScreen = document.getElementById('end-screen-img');
 let gameOverScreen = new Image();
 let intervalIds = [];
 let usesTouchscreen = false;
-
+/** */
 function init() {
     world = new World(canvas, keyboard, intervalIds);
     window.addEventListener('keydown', (event) => {
