@@ -10,15 +10,16 @@ class MovableObject extends DrawableObject {
     damage = 5;
 
     isAboveGround() {
-        return this.y + this.height < groundLevel;
+        return this.y + this.height - this.offset.bottom < groundLevel;
     }
 
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY < 0 || this instanceof ThrowableObject || (this instanceof Endboss && this.isDead())) {
-                this.y = Math.min(this.y + this.speedY, groundLevel - this.height);
-                if (this.y == groundLevel - this.height) {
+                this.y = Math.min(this.y + this.speedY, groundLevel - this.height + this.offset.bottom);
+                if (this.y + this.height - this.offset.bottom >= groundLevel) {
                     this.speedY = 0;
+                    // this.y = groundLevel - this.height + this.offset.bottom;
                 } else {
                     this.speedY += this.accelerationY;
                 }
@@ -44,6 +45,7 @@ class MovableObject extends DrawableObject {
     jump() {
         this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
         this.speedY = -40;
+        if (this instanceof Character) this.jumpSound.play();
     }
 
     isColliding(obj) {

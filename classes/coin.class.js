@@ -4,5 +4,6 @@ class Coin extends CollectableObject {
         this.height = 300 * globalScaleFactor;
         this.width = 301 * globalScaleFactor;
         this.offset = {top: 20, right: 20, bottom: 20, left: 20};
+        this.collectingCoinSound = new Audio('./audio/cashRegister.mp3');
     }
 }

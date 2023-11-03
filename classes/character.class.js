@@ -64,6 +64,12 @@ class Character extends MovableObject {
     ];
     world;
     onCrushingCourseWith = [];
+    dyingSound = new Audio('./audio/dying.mp3');
+    isHurtSound = new Audio('./audio/isHurt.mp3');
+    jumpSound = new Audio('./audio/jump.mp3');
+    snoringSound = new Audio('./audio/snoring.mp3');
+    continuousSound = new Audio();
+    walkingSound = new Audio('./audio/characterWalking.mp3');
 
 
     constructor(world) {
@@ -78,8 +84,9 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONG_IDLE);
-        this.walkingSound = new Audio('./audio/characterWalking.mp3');
         this.walkingSound.loop = true;
+        this.isHurtSound.loop = true;
+        this.snoringSound.loop = true;
         this.applyGravity();
         this.animate();
     }
@@ -92,21 +99,59 @@ class Character extends MovableObject {
     }
 
     handleAnimation() {
-        if (this.isDead()) { this.handleDeadState() }
-        else if (this.isHurt()) { this.handleState(this.IMAGES_HURT, false); }
-        else if (this.isAboveGround()) { this.handleState(this.IMAGES_JUMPING, true); }
+        if (this.isDead()) { this.handleDeadAnimation() }
+        else if (this.isHurt()) { this.handleHurtAnimation(); }
+        else if (this.isAboveGround()) { this.handleJumpAnimation(); }
         else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) { this.handleWalkAnimation(); }
-        else if (this.getIdleTime() > 5) { this.playAnimation(this.IMAGES_LONG_IDLE); }
-        else {
-            this.walkingSound.pause();
-            this.playAnimation(this.IMAGES_IDLE);
-        }
+        else if (this.getIdleTime() > 5) { this.handleLongIdleAnimation(); }
+        else { this.handleIdleAnimation(); }
     }
 
     handleWalkAnimation() {
         this.resetIdleState();
-        this.walkingSound.play();
+        this.playContinuousSound(this.walkingSound);
         this.playAnimation(this.IMAGES_WALKING);
+    }
+
+    handleJumpAnimation() {
+        this.resetIdleState();
+        this.continuousSound.pause();
+        this.playAnimation(this.IMAGES_JUMPING);
+    }
+
+    handleHurtAnimation() {
+        this.resetIdleState();
+        this.playContinuousSound(this.isHurtSound);
+        this.playAnimation(this.IMAGES_HURT);
+    }
+
+    handleIdleAnimation() {
+        this.continuousSound.pause();
+        this.playAnimation(this.IMAGES_IDLE);
+    }
+
+    handleLongIdleAnimation() {
+        this.playContinuousSound(this.snoringSound);
+        this.playAnimation(this.IMAGES_LONG_IDLE);
+    }
+
+    handleDeadAnimation() {
+        this.isIdle = false;
+        this.dyingSound.play();
+        this.playAnimation(this.IMAGES_DEAD);
+        //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
+        if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
+            stopInterval(this.animationInterval);
+            handleGameOver('failure');
+        }
+    }
+
+    playContinuousSound(sound) {
+        if (this.continuousSound != sound) {
+            this.continuousSound.pause();
+            this.continuousSound = sound;
+            this.continuousSound.play();
+        } else if (this.continuousSound.paused) this.continuousSound.play();
     }
 
     handleMotion() {
@@ -122,23 +167,6 @@ class Character extends MovableObject {
             this.oppositeDirection = true;
             this.moveLeft();
             this.world.cameraX += this.speed;
-        }
-    }
-
-    handleState(stateArray, stopSound) {
-        this.resetIdleState();
-        if (stopSound) this.walkingSound.pause();
-        this.playAnimation(stateArray);
-    }
-
-    handleDeadState() {
-        this.isIdle = false;
-        this.walkingSound.pause();
-        this.playAnimation(this.IMAGES_DEAD);
-        //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
-        if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
-            stopInterval(this.animationInterval);
-            handleGameOver('failure');
         }
     }
 

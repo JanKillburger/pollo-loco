@@ -16,6 +16,7 @@ class SmallChicken extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 400 + Math.random() * 500;
+        this.y = groundLevel - this.height + this.offset.bottom;
         this.speed = 0.15 + Math.random() * 0.25;
         this.alarmSound = new Audio('./audio/smallChickenAlarm.mp3');
         this.animate();

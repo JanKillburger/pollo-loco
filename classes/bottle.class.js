@@ -4,5 +4,6 @@ class Bottle extends CollectableObject {
         this.height = 400 * globalScaleFactor;
         this.width = 400 * globalScaleFactor;
         this.offset = {top: 10, right: 40, bottom: 10, left: 40};
+        this.collectingBottleSound = new Audio('./audio/collectBottle.mp3');
     }
 }

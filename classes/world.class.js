@@ -45,7 +45,7 @@ class World {
     }
 
     checkGameEvents() {
-        setInterval(() => {
+        setStoppableInterval(() => {
             this.checkCollisions();
             this.checkThrows();
             this.checkCollections();
@@ -63,7 +63,7 @@ class World {
                 if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {
                     this.destroyBottle(tO);
                     this.handleEnemyDamage(enemy);
-                } else if (tO.y + tO.height >= groundLevel && !tO.isDead()) {
+                } else if (tO.y + tO.height - tO.offset.bottom >= groundLevel && !tO.isDead()) {
                     this.destroyBottle(tO);
                 }
             })
@@ -111,17 +111,27 @@ class World {
             let isCollected = false;
             if (this.character.isColliding(cO)) {
                 if (cO instanceof Coin && this.availableCoins < this.statusBarCoins.capacity) {
-                    this.availableCoins++;
-                    this.statusBarCoins.setPercentage(this.availableCoins);
+                    this.collectCoin(cO);
                     isCollected = true;
                 } else if (cO instanceof Bottle && this.availableBottles < this.statusBarBottles.capacity) {
-                    this.availableBottles++;
-                    this.statusBarBottles.setPercentage(this.availableBottles);
+                    this.collectBottle(cO);
                     isCollected = true;
                 }
                 if (isCollected) { this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1); }
             }
         })
+    }
+
+    collectCoin(cO) {
+        this.availableCoins++;
+        this.statusBarCoins.setPercentage(this.availableCoins);
+        cO.collectingCoinSound.play();
+    }
+
+    collectBottle(cO) {
+        this.availableBottles++;
+        this.statusBarBottles.setPercentage(this.availableBottles);
+        cO.collectingBottleSound.play();
     }
 
     addObjectsToMap(objects) {

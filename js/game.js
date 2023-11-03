@@ -29,6 +29,7 @@ function init() {
 
 function handleGameOver(screenType) {
     stopIntervals();
+    world.character.continuousSound.pause();
     endScreen.classList.add('active');
     switch (screenType) {
         case 'success':
