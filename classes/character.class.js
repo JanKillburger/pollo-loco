@@ -70,14 +70,14 @@ class Character extends MovableObject {
     snoringSound = new Audio('./audio/snoring.mp3');
     continuousSound = new Audio();
     walkingSound = new Audio('./audio/characterWalking.mp3');
+    damage = 5;
 
 
     constructor(world) {
         super().loadImage('./img/2_character_pepe/2_walk/W-21.png');
         this.world = world;
-        this.offset = { top: 135, right: 40, bottom: 15, left: 25 };
+        this.offset = { top: 135, right: 45, bottom: 15, left: 50 };
         this.speed = 10;
-        this.damage = 1;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
@@ -137,7 +137,7 @@ class Character extends MovableObject {
 
     handleDeadAnimation() {
         this.isIdle = false;
-        this.dyingSound.play();
+        playSound(this.dyingSound);
         this.playAnimation(this.IMAGES_DEAD);
         //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
         if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
@@ -150,8 +150,8 @@ class Character extends MovableObject {
         if (this.continuousSound != sound) {
             this.continuousSound.pause();
             this.continuousSound = sound;
-            this.continuousSound.play();
-        } else if (this.continuousSound.paused) this.continuousSound.play();
+            playSound(this.continuousSound);
+        } else if (this.continuousSound.paused) playSound(this.continuousSound);
     }
 
     handleMotion() {

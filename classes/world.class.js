@@ -1,3 +1,4 @@
+/** Class representing the world (environment) of the game. */
 class World {
     canvas;
     keyboard;
@@ -8,7 +9,11 @@ class World {
     availableBottles = 6;
     availableCoins = 0;
     sounds = [];
-
+    lastThrowDate = new Date();
+    /** Create the world.
+     * @param {HTMLCanvasElement} canvas - canvas element to draw the game in.
+     * @param {object} keyboard - Can be used to check which controls (keyboard or touchscreen) are currently enabled/disabled.
+     */
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -23,8 +28,10 @@ class World {
         this.checkThrows();
     }
 
-
-
+    /** Draw the canvas for each screen refresh.
+     * Adds all the elements to the canvas and calls the requestAnimationFrame method with this function as argument.
+     * Effectively this function is calling itself for each screen refresh.
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.cameraX, 0);
@@ -39,11 +46,11 @@ class World {
         this.statusBarEndboss.draw(this.ctx);
         this.statusBarBottles.draw(this.ctx);
         this.statusBarCoins.draw(this.ctx);
-        //Draw() wird immer wieder aufgerufen
         let self = this;
         requestAnimationFrame(function () { self.draw() });
     }
 
+    /** Check game events: collisions, throws, collections. Sets interval to constantly detect events. */
     checkGameEvents() {
         setStoppableInterval(() => {
             this.checkCollisions();
@@ -52,17 +59,20 @@ class World {
         }, globalMotionInterval);
     }
 
+    /** Check collisions.
+     * Loops through enemies array of level object:
+     * 1. checks if character is about to crush the enemy
+     * 2. upon collision of enemy with character: checks if enemy is crushed by character, otherwise character is hit by enemy.
+     * 3. checks for all throwable objects (bottles flying right now) if they are colliding with the enemy or groundLevel
+     */
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
-            //stores the enemies the character is above (used in isCrushingEnemy function)
             this.character.checkCrushingCourse(enemy);
-            //checks if character and enemy are colliding
             this.handleCharacterCollision(enemy);
-            //checks collisions of bottles with current enemy instance or ground
             this.throwableObjects.forEach((tO) => {
                 if (tO.isColliding(enemy) && !enemy.isDead() && !tO.isDead()) {
                     this.destroyBottle(tO);
-                    this.handleEnemyDamage(enemy);
+                    this.handleEnemyDamage(enemy, tO.damage);
                 } else if (tO.y + tO.height - tO.offset.bottom >= groundLevel && !tO.isDead()) {
                     this.destroyBottle(tO);
                 }
@@ -70,34 +80,51 @@ class World {
         })
     }
 
-    handleEnemyDamage(enemy) {
-        enemy.isHit();
+    /** Hits enemy. If enemy is Endboss it updates the endboss statusbar.
+     * @param {object} enemy - Enemy being hit (Chicken, small chicken or Endboss)
+     * @param {number} damage - Damage to decrease enemy's energy by.
+     */
+    handleEnemyDamage(enemy, damage) {
+        enemy.isHit(damage);
         if (enemy instanceof Endboss) {
             this.statusBarEndboss.setPercentage(enemy.energy);
         }
     }
 
+    /** Handle character collision.
+     * Differentiates between character jumping on enemy and enemy hitting character.
+     * @param {object} enemy - Enemy colliding with character.
+     */
     handleCharacterCollision(enemy) {
         if (this.character.isCrushingEnemy(enemy) && !enemy.isDead()) {
-            enemy.isHit();
+            enemy.isHit(this.character.damage);
         }
-        //checks if character is hit by enemy
         else if (this.character.isColliding(enemy) && !this.character.isDead() && !enemy.isDead()) {
-            this.character.isHit();
+            this.character.isHit(enemy.damage);
             this.statusBarHealth.setPercentage(this.character.energy);
         }
     }
 
+    /** Destroy throwable Object (bottle).
+     * Plays crash sound, sets energy to zero and sets timeout to remove throwable Object from throwableObjects array after destruction.
+     * @param {object} tO - throwable Object (bottle) to be destroyed.
+     */
     destroyBottle(tO) {
-        tO.bottleCrash.play();
-        tO.isHit();
+        playSound(tO.bottleCrash);
+        tO.isHit(tO.energy);
         setTimeout(() => {
             this.throwableObjects.splice(this.throwableObjects.indexOf(tO), 1)
         }, 600);
     }
 
+    /** Check if bottle needs to be thrown.
+     * Required: control is being pressed, another bottle is available and last throw dates back at least 500ms.
+     * Sets lastThrowDate for next check.
+     * Creates new ThrowableObject and decrements the available bottles and updates statusbar.
+     */
     checkThrows() {
-        if (this.keyboard.D && !this.character.isDead() && this.availableBottles > 0) {
+        if (this.keyboard.D && this.availableBottles > 0 && new Date() - this.lastThrowDate > 500) {
+            this.lastThrowDate = new Date();
             const bottle = new ThrowableObject(this.character.x, this.character.oppositeDirection ? -1 : 1, this.character.y);
             this.character.resetIdleState();
             this.throwableObjects.push(bottle);
@@ -106,6 +133,11 @@ class World {
         }
     }
 
+    /** Check collections of collectable items (coins, bottles):
+     * Checks collision of character with all collectable items and removes them from the collectableObjects array.
+     * Required: sufficient capacity for another item.
+     * Collects item.
+     */
     checkCollections() {
         this.level.collectableObjects.forEach((cO) => {
             let isCollected = false;
@@ -122,22 +154,40 @@ class World {
         })
     }
 
+    /** Collect coin.
+     * Increments available Coins.
+     * Updates coin statusbar.
+     * Plays coin collection sound.
+     */
     collectCoin(cO) {
         this.availableCoins++;
         this.statusBarCoins.setPercentage(this.availableCoins);
-        cO.collectingCoinSound.play();
+        playSound(cO.collectingCoinSound);
     }
 
+    /** Collect bottle.
+     * Increments available bottles.
+     * Updates bottle statusbar.
+     * Plays bottle collection sound.
+     */
     collectBottle(cO) {
         this.availableBottles++;
         this.statusBarBottles.setPercentage(this.availableBottles);
-        cO.collectingBottleSound.play();
+        playSound(cO.collectingBottleSound);
     }
 
+    /** Call addToMap function for objects array.
+     * @param {object[]} objects - Array of objects to be drawn on to the canvas.
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => this.addToMap(o))
     }
 
+    /** Draw movable Object to map.
+     * @param {object} mo - Movable object to be drawn.
+     * @param {boolean} mo.oppositeDirection - True for default direction (e.g. Pepe looking to the right), otherwise false.
+     * Flips (mirrors) image if required.
+     */
     addToMap(mo) {
         if (mo.oppositeDirection) {
             this.flipImage(mo);
@@ -149,6 +199,9 @@ class World {
         }
     }
 
+    /** Flips image by manipulating the canvas context
+     * @param {object} mo - Movable object.
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -156,10 +209,11 @@ class World {
         mo.x *= -1;
     }
 
+    /** Restores canvas after manipulation for flipping image
+     * @param {object} mo - Movable object.
+    */
     flipImageBack(mo) {
         mo.x *= -1;
         this.ctx.restore();
     }
-
-
 }

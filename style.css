@@ -47,10 +47,10 @@ button {
   outline: none;
   font-family: inherit;
   font-size: inherit;
-  background-color: rgb(244, 164, 96);
-  border-radius: 0.3em;
-  padding: 0.3em;
-  transition: width 0.5s;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 a {
@@ -67,11 +67,6 @@ a:hover {
   font-size: 1.5em;
 }
 
-button:hover {
- transform: scale(1.1) translate(-50%,0);
- cursor: pointer;
-}
-
 .fullscreen {
   position: relative;
   background-color: sandybrown;
@@ -81,7 +76,7 @@ canvas {
   background-color: sandybrown;
   display: block;
   margin: 0;
-  padding: 0; 
+  padding: 0;
   margin-inline: auto;
 }
 
@@ -98,15 +93,21 @@ canvas.fullscreen-enabled {
   bottom: 0;
 }
 
-.mobile-control {
+.icon {
   width: 32px;
   padding: 16px;
   border-radius: 32px;
   background-color: rgb(240, 164, 24);
 }
 
-.mobile-control:active {
+.icon:active {
   background-color: rgba(240, 164, 24, 0.3);
+}
+
+#toggle-sounds {
+  position: absolute;
+  top: 16px;
+  right: 200px;
 }
 
 #mobile-left {
@@ -162,10 +163,13 @@ canvas.fullscreen-enabled {
 }
 
 .start-game {
+  background-color: rgb(244, 164, 96);
+  border-radius: 0.3em;
+  padding: 0.3em;
   position: absolute;
   top: 16px;
   left: 50%;
-  transform: translate(-50%,0);
+  transform: translate(-50%, 0);
 }
 
 #toggle-fullscreen {
@@ -185,6 +189,10 @@ canvas.fullscreen-enabled {
   /* display: block; */
 }
 
+.portrait-orientation-note {
+  display: none;
+}
+
 @media (max-width: 720px) {
   canvas {
     width: 100%;
@@ -197,10 +205,21 @@ canvas.fullscreen-enabled {
   }
 }
 
-@media (max-aspect-ratio: 1.5) {
+@media (max-aspect-ratio: 3 / 2) {
   canvas.fullscreen-enabled {
-    height: calc(100vw * 2 / 3  - var(--scrollbar-width));
-    width: 100vw  - var(--scrollbar-width);
+    height: calc(100vw * 2 / 3 - var(--scrollbar-width));
+    width: 100vw - var(--scrollbar-width);
+  }
+}
+
+@media (max-aspect-ratio: 1 / 1) {
+  .portrait-orientation-note {
+    display: revert;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: red;
   }
 }
 

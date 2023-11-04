@@ -7,7 +7,10 @@ let endScreen = document.getElementById('end-screen-img');
 let gameOverScreen = new Image();
 let intervalIds = [];
 let usesTouchscreen = false;
-/** */
+let playSounds = true;
+/** Creates World object, adds event listeners for keyboard game control and handles hiding/showing mobile control elements, start/end screen etc.
+ * Is also called for re-starting the game after game over.
+ */
 function init() {
     world = new World(canvas, keyboard, intervalIds);
     window.addEventListener('keydown', (event) => {
@@ -26,11 +29,12 @@ function init() {
     if (usesTouchscreen) document.querySelectorAll('.mobile-control').forEach((el) => el.classList.remove('d-none'));
 }
 
-
+/** Handles all actions related to end of game, like stopping animations and sounds and showing the appropriate end screen.
+ * @param {string} screenType - A string whose value is either 'success' or 'failure'. Depending on this value a different text is shown on end screen.
+ */
 function handleGameOver(screenType) {
     stopIntervals();
     world.character.continuousSound.pause();
-    endScreen.classList.add('active');
     switch (screenType) {
         case 'success':
             endScreen.src = './img/9_intro_outro_screens/game_over/game over.png';
@@ -39,27 +43,31 @@ function handleGameOver(screenType) {
             endScreen.src = './img/9_intro_outro_screens/game_over/you lost.png';
             break;
     }
+    endScreen.classList.add('active');
     document.querySelector('.start-game').classList.remove('d-none');
     if (usesTouchscreen) document.querySelectorAll('.mobile-control').forEach((el) => el.classList.add('d-none'));
 }
 
+/** Sets a new interval and stores the interval ID in the array intervalIds (to clear all intervals at end of game)
+ * @param {Function} callbackFn - Function to set an interval for.
+ * @param {number} interval - Duration in ms how frequently the function needs to be run.
+ * @returns {number} The interval ID
+ */
 function setStoppableInterval(callbackFn, interval) {
     const intervalId = setInterval(callbackFn, interval);
     intervalIds.push(intervalId);
     return intervalId;
 }
 
-function stopInterval(intervalId) {
-    clearInterval(intervalId);
-}
-
+/** Stops all intervals whose IDs are stored in intervalIds array and clears array. */
 function stopIntervals() {
     for (const intervalId of intervalIds) {
-        stopInterval(intervalId);
+        clearInterval(intervalId);
     }
     intervalIds = [];
 }
 
+/** Toggles fullscreen by adding/removing html classes to the canvas, end-screen-img and start-screen-img elements and requesting/exiting fullscreen. */
 function toggleFullscreen() {
     if (document.fullscreenElement) {
         document.querySelectorAll('#canvas, #end-screen-img, #start-screen-img').forEach((el) => el.classList.remove('fullscreen-enabled'));
@@ -72,6 +80,7 @@ function toggleFullscreen() {
     }
 }
 
+/** Calculates scrollbar width and stores it as CSS custom property for use in CSS rules. */
 function calculateVerticalScrollbarWidth() {
     document.documentElement.style.setProperty(
         '--scrollbar-width',
@@ -79,19 +88,35 @@ function calculateVerticalScrollbarWidth() {
     );
 }
 
+/** Toggles all game sounds. Plays/Stops any continuous sound of the character being played upon request as well. */
+function toggleSounds() {
+    playSounds = !playSounds;
+    if (playSounds) {
+        world.character.continuousSound.play();
+        document.getElementById('toggle-sounds').src = './img/mute-sounds.png';
+    } else {
+        world.character.continuousSound.pause();
+        document.getElementById('toggle-sounds').src = './img/unmute-sounds.png';
+    }
+}
+
+/** Helper function for playing sounds. Checks if sounds are enabled before playing them. */
+function playSound(sound) {
+    if (playSounds) sound.play();
+}
+
+/** Prevents default actions of keydown events: required for the game to work since arrow and space keys cause issues. */
 window.addEventListener('keydown', (ev) => {
     ev.preventDefault();
 })
-
+/** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('DOMContentLoaded', calculateVerticalScrollbarWidth, false);
-
+/** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('resize', calculateVerticalScrollbarWidth, false);
-
+/** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('load', calculateVerticalScrollbarWidth, false);
-
+/** Event to detect touchscreen devices, sets a global variable to be used in other functions */
 window.addEventListener('touchstart', function onFirstTouch() {
-    // or set some global variable
     usesTouchscreen = true;
-    // we only need to know once that a human touched the screen, so we can stop listening now
     window.removeEventListener('touchstart', onFirstTouch, false);
 }, false);

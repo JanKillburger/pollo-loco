@@ -1,3 +1,6 @@
+/** Creates a new Level object.
+ * @returns {object} Level 1 object
+ */
 function initLevel1() {
     return new Level(
         [

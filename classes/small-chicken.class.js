@@ -11,13 +11,16 @@ class SmallChicken extends MovableObject {
     IMAGES_DEAD = [
         './img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
+    offset = {top: 10, right: 15, bottom: 10, left: 10};
+    damage = 5;
+
     constructor() {
         super().loadImage('./img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 400 + Math.random() * 500;
         this.y = groundLevel - this.height + this.offset.bottom;
-        this.speed = 0.15 + Math.random() * 0.25;
+        this.speed = 1 + Math.random() * 1;
         this.alarmSound = new Audio('./audio/smallChickenAlarm.mp3');
         this.animate();
     }
@@ -26,7 +29,7 @@ class SmallChicken extends MovableObject {
         this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-                this.alarmSound.play();
+                playSound(this.alarmSound);
                 stopInterval(this.animationInterval);
             } else {
                 

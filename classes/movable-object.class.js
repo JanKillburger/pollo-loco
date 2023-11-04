@@ -45,15 +45,15 @@ class MovableObject extends DrawableObject {
     jump() {
         this.currentImage = 0; //ensures that jumping animation is played from the first image of the array
         this.speedY = -40;
-        if (this instanceof Character) this.jumpSound.play();
+        if (this instanceof Character) playSound(this.jumpSound);
     }
 
     isColliding(obj) {
         return this.hasCoverageX(obj) && this.hasCoverageY(obj)
     }
 
-    isHit() {
-        this.energy -= this.damage;
+    isHit(damage) {
+        this.energy -= damage;
         if (this.energy <= 0) {
             this.energy = 0;
             this.currentImage = 0; //ensures that dying animation is played from the first image of the array

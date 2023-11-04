@@ -47,7 +47,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURTING);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 700;
-        this.damage = 10;
+        this.damage = 15;
         this.animate();
         this.offset = { top: 20, right: 25, bottom: 20, left: 25 };
         this.chickenScream = new Audio('./audio/chickenScream.mp3');
@@ -58,13 +58,13 @@ class Endboss extends MovableObject {
         this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-                this.grillSound.play();
+                playSound(this.grillSound);
                 //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
                 if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
                     this.handleDeadState();
                 }
             } else if (this.isHurt()) {
-                this.chickenScream.play();
+                playSound(this.chickenScream);
                 this.playAnimation(this.IMAGES_HURTING);
             } else {
                 this.playAnimation(this.IMAGES_ATTACKING);

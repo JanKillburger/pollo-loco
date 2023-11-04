@@ -1,6 +1,6 @@
 class Chicken extends MovableObject {
     energy = 5;
-    height = 248 * globalScaleFactor;
+    height = 400 * globalScaleFactor;
     width = this.height / 0.98;
     IMAGES_WALKING = [
         './img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -10,13 +10,16 @@ class Chicken extends MovableObject {
     IMAGES_DEAD = [
         './img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
+    offset = { top: 10, right: 20, bottom: 10, left: 10 };
+    damage = 10;
+
     constructor() {
         super().loadImage('./img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 400 + Math.random() * 500;
         this.y = groundLevel - this.height + this.offset.bottom;
-        this.speed = 0.15 + Math.random() * 0.25;
+        this.speed = 2 + Math.random() * 2;
         this.animate();
         this.alarmSound = new Audio('./audio/smallChickenAlarm.mp3');
     }
@@ -25,10 +28,10 @@ class Chicken extends MovableObject {
         this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-                this.alarmSound.play();
+                playSound(this.alarmSound);
                 stopInterval(this.animationInterval);
             } else {
-                
+
                 this.playAnimation(this.IMAGES_WALKING);
                 this.moveLeft();
             }
