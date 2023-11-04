@@ -1,8 +1,10 @@
+/** Representing Pepe character.
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
     y = 120;
     idleSince;
     isIdle = false;
-    //absolute numbers are the original pixel sizes of image
     height = 1200 * globalScaleFactor;
     width = 610 * globalScaleFactor;
     IMAGES_WALKING = [
@@ -72,7 +74,12 @@ class Character extends MovableObject {
     walkingSound = new Audio('./audio/characterWalking.mp3');
     damage = 5;
 
-
+    /** Create Pepe character.
+     * @param {object} world - World object reference.
+     * Adds images and sounds.
+     * Sets size and offset.
+     * Starts animation.
+     */
     constructor(world) {
         super().loadImage('./img/2_character_pepe/2_walk/W-21.png');
         this.world = world;
@@ -91,6 +98,7 @@ class Character extends MovableObject {
         this.animate();
     }
 
+    /** Animates character, both the animation and motion. */
     animate() {
         this.animationInterval = setStoppableInterval(() => {
             this.handleAnimation();
@@ -98,6 +106,10 @@ class Character extends MovableObject {
         }, globalMotionInterval);
     }
 
+    /** Handles the animation.
+     * Differentiates between different states.
+     * Long idle (sleeping) is active after 5s of being idle.
+     */
     handleAnimation() {
         if (this.isDead()) { this.handleDeadAnimation() }
         else if (this.isHurt()) { this.handleHurtAnimation(); }
@@ -107,45 +119,58 @@ class Character extends MovableObject {
         else { this.handleIdleAnimation(); }
     }
 
+    /** Handles walk animation. */
     handleWalkAnimation() {
         this.resetIdleState();
         this.playContinuousSound(this.walkingSound);
         this.playAnimation(this.IMAGES_WALKING);
     }
 
+    /** Handles Jump animation. */
     handleJumpAnimation() {
         this.resetIdleState();
         this.continuousSound.pause();
         this.playAnimation(this.IMAGES_JUMPING);
     }
 
+    /** Handles Hurt Animation. */
     handleHurtAnimation() {
         this.resetIdleState();
         this.playContinuousSound(this.isHurtSound);
         this.playAnimation(this.IMAGES_HURT);
     }
 
+    /** Handles Idle Animation. */
     handleIdleAnimation() {
         this.continuousSound.pause();
         this.playAnimation(this.IMAGES_IDLE);
     }
 
+    /** Handles Long Idle Animation. */
     handleLongIdleAnimation() {
         this.playContinuousSound(this.snoringSound);
         this.playAnimation(this.IMAGES_LONG_IDLE);
     }
 
+    /** Handles Dead Animation
+     * Checks if last image of dying animation is reached; if yes, stops character interval and calls game over screen:
+     */
     handleDeadAnimation() {
         this.isIdle = false;
         playSound(this.dyingSound);
         this.playAnimation(this.IMAGES_DEAD);
-        //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
         if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
             stopInterval(this.animationInterval);
             handleGameOver('failure');
         }
     }
 
+    /** Play a looped sound.
+     * @param {object} sound - Audio object containing looped sound to play.
+     * continuousSound property holds an audio.
+     * Checks whether this is not the passed-in sound.
+     * Changes it if necessary and plays it.
+     */
     playContinuousSound(sound) {
         if (this.continuousSound != sound) {
             this.continuousSound.pause();
@@ -154,6 +179,9 @@ class Character extends MovableObject {
         } else if (this.continuousSound.paused) playSound(this.continuousSound);
     }
 
+    /** Handle Motion.
+     * Differentiates walking left and right and jumping.
+     */
     handleMotion() {
         if (!this.isAboveGround() && (this.world.keyboard.UP || this.world.keyboard.SPACE)) {
             this.jump();
@@ -170,11 +198,18 @@ class Character extends MovableObject {
         }
     }
 
+    /** Reset idle state.
+     * Helper function to determin transition from idle to long idle animation
+     * by providing the idleSince value.
+     */
     resetIdleState() {
         this.isIdle = false;
         this.idleSince = new Date().getTime();
     }
 
+    /** Get idle time.
+     * @returns calculated idle time in seconds.
+     */
     getIdleTime() {
         if (this.isIdle) {
             let now = new Date();
@@ -185,10 +220,16 @@ class Character extends MovableObject {
         }
     }
 
+    /** @returns if character is crushing an enemy */
     isCrushingEnemy(obj) {
         return this.isColliding(obj) && this.onCrushingCourseWith.indexOf(obj) != -1
     }
 
+    /** Check if character is above an object.
+     * @param {object} obj - Object to check for.
+     * If character is above, obj is stored in the onCrushingCourseWith array.
+     * to be used in detecting crushing of enemy.
+     */
     checkCrushingCourse(obj) {
         if (this.hasCoverageX(obj) && this.isAbove(obj)) {
             if (this.onCrushingCourseWith.indexOf(obj) == -1) {

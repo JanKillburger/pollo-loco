@@ -1,4 +1,9 @@
+/** Represents collectable bottle.
+ * @extends CollectableObject
+ */
 class Bottle extends CollectableObject {
+    /** Sets size, offset and sound for crashing bottle.
+     */
     constructor(xStart, xRange, yStart, yRange) {
         super(xStart, xRange, yStart, yRange).loadImage('./img/6_salsa_bottle/salsa_bottle.png');
         this.height = 400 * globalScaleFactor;
