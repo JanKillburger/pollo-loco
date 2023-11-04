@@ -1,4 +1,10 @@
+/** Represents a collectable coin.
+ * @extends CollectableObject
+ */
 class Coin extends CollectableObject {
+    /** Create a collectable coin.
+     * Setting image and sound and size and offset.
+     */
     constructor(xStart, xRange, yStart, yRange) {
         super(xStart, xRange, yStart, yRange).loadImage('./img/8_coin/coin_1.png');
         this.height = 300 * globalScaleFactor;

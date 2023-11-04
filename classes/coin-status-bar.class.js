@@ -1,4 +1,8 @@
+/** Represents coin statusbar.
+ * @extends StatusBar
+ */
 class CoinStatusbar extends StatusBar {
+    /** Creates Coin Statusbar, setting images, capacity and current value, size, position. */
     constructor(currentValue, capacity) {
         super([
             './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',

@@ -1,3 +1,6 @@
+/** Represents Chicken
+ * @extends MovableObject
+ */
 class Chicken extends MovableObject {
     energy = 5;
     height = 400 * globalScaleFactor;
@@ -13,6 +16,7 @@ class Chicken extends MovableObject {
     offset = { top: 10, right: 20, bottom: 10, left: 10 };
     damage = 10;
 
+    /** Create chicken and provide with images, size, position and sound. */
     constructor() {
         super().loadImage('./img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -24,6 +28,7 @@ class Chicken extends MovableObject {
         this.alarmSound = new Audio('./audio/smallChickenAlarm.mp3');
     }
 
+    /** Handles Animation and dying sound */
     animate() {
         this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
@@ -31,11 +36,9 @@ class Chicken extends MovableObject {
                 playSound(this.alarmSound);
                 stopInterval(this.animationInterval);
             } else {
-
                 this.playAnimation(this.IMAGES_WALKING);
                 this.moveLeft();
             }
         }, globalMotionInterval);
-
     }
 }
