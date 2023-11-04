@@ -1,3 +1,6 @@
+/** Represents small chicken
+ * @extends MovableObject
+ */
 class SmallChicken extends MovableObject {
     y = 360;
     energy = 5;
@@ -14,6 +17,9 @@ class SmallChicken extends MovableObject {
     offset = {top: 10, right: 15, bottom: 10, left: 10};
     damage = 5;
 
+    /** Creates small chicken.
+     * Sets images for animations, sounds, speed, position, size etc.
+     */
     constructor() {
         super().loadImage('./img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -25,12 +31,15 @@ class SmallChicken extends MovableObject {
         this.animate();
     }
 
+    /** Animate small chicken.
+     * Differentiates between walking and dead states.
+     */
     animate() {
         this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
                 playSound(this.alarmSound);
-                stopInterval(this.animationInterval);
+                clearInterval(this.animationInterval);
             } else {
                 
                 this.playAnimation(this.IMAGES_WALKING);

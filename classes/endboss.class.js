@@ -1,3 +1,6 @@
+/** Represents Endboss.
+ * @extends MovableObject
+ */
 class Endboss extends MovableObject {
     y = 155;
     height = 1217 * globalScaleFactor;
@@ -39,6 +42,10 @@ class Endboss extends MovableObject {
         './img/4_enemie_boss_chicken/5_dead/G26.png'
     ];
 
+    /** Creates Endboss.
+     * Loads images for animations and sounds.
+     * Sets size, position etc.
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
@@ -54,12 +61,15 @@ class Endboss extends MovableObject {
         this.grillSound = new Audio('./audio/grillSound.mp3');
     }
 
+    /** Animate Endboss.
+     * Plays animation and sounds, differentiating states (dead, hurt, attacking, walking).
+     * When dead: checks if last image of dying animation is reached to stop there.
+     */
     animate() {
         this.animationInterval = setStoppableInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
                 playSound(this.grillSound);
-                //checks if last image of dying animation is reached; if yes, stops interval and calls game over screen
                 if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
                     this.handleDeadState();
                 }
@@ -73,8 +83,11 @@ class Endboss extends MovableObject {
 
     }
 
+    /** Handles Dead state
+     * Called to stop Endboss interval and trigger game over screen.
+     */
     handleDeadState() {
-        stopInterval(this.animationInterval);
+        clearInterval(this.animationInterval);
         handleGameOver('success');
     }
 }

@@ -1,3 +1,6 @@
+/** Represents Keyboard.
+ * Provides information on which control is active.
+ */
 class Keyboard {
     LEFT = false;
     RIGHT = false;
@@ -5,9 +8,15 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
     D = false;
+
+    /** Creates Keyboard */
     constructor() {
         this.addMobileControlsEvents();
     }
+
+    /** Represents pressing a key, setting the respective property to true.
+     * @param {object} key - Key that has been pressed by the user.
+     */
     pressKey(key) {
         switch (key) {
             case 'ArrowLeft':
@@ -31,6 +40,9 @@ class Keyboard {
         }
     }
 
+    /** Represents releasinga a key, setting the respective property to false.
+     * @param {object} key - Key that has been released by the user.
+     */
     releaseKey(key) {
         switch (key) {
             case 'ArrowLeft':
@@ -54,6 +66,7 @@ class Keyboard {
         }
     }
 
+    /** Adds equivalent event listeners to the mobile controls to set the properties in the same way as with a keyboard. */
     addMobileControlsEvents() {
         document.getElementById('mobile-left').addEventListener('touchstart', (ev) => {
             ev.preventDefault();

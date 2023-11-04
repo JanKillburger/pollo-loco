@@ -160,7 +160,7 @@ class Character extends MovableObject {
         playSound(this.dyingSound);
         this.playAnimation(this.IMAGES_DEAD);
         if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
-            stopInterval(this.animationInterval);
+            clearInterval(this.animationInterval);
             handleGameOver('failure');
         }
     }

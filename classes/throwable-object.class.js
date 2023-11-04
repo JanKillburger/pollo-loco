@@ -1,3 +1,6 @@
+/** Represents throwable object.
+ * @extends MovableObject
+ */
 class ThrowableObject extends MovableObject {
     energy = 5;
     height = 400 * globalScaleFactor;
@@ -19,35 +22,56 @@ class ThrowableObject extends MovableObject {
     bottleCrash = new Audio('./audio/bottleCrash.mp3');
     damage = 5;
 
+    /** Create throwable object.
+     * @param {number} x - Start x position
+     * @param {number} directionX - determines direction of throw: is 1 (to the right) or -1 (to the left)
+     * @param {number} y - Start y position
+     * Loads images, sound. Sets size, position.
+     */
     constructor(x, directionX, y) {
         super().loadImages(this.IMAGES_ROTATION);
         this.loadImages(this.IMAGES_SPLASH);
         this.loadImage('./img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
-        this.offset = {top: 20, right: 20, bottom: 20, left: 20};
+        this.offset = { top: 20, right: 20, bottom: 20, left: 20 };
         this.throw(x, directionX, y);
         this.animate();
         this.bottleCrash.currentTime = 0.5;
     }
 
+    /** Animate bottle throw.
+     * differentiates between rotation and splash (dead) animation.
+     */
     animate() {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
-                this.accelerationY = 0;
-                this.speedY = 0;
-                this.speed = 0;
-                this.playAnimation(this.IMAGES_SPLASH);
-                //checks if last image of splashing animation is reached; if yes, stops interval and calls game over screen
-                if (((this.currentImage - 1) % this.IMAGES_SPLASH.length) + 1 === this.IMAGES_SPLASH.length) {
-                    clearInterval(this.animationInterval);
-                }
+                this.handleDeadAnimation();
             } else {
                 this.playAnimation(this.IMAGES_ROTATION);
             }
         }, globalMotionInterval);
     }
 
+    /** Handle dead animation.
+     * Stops motion of bottle.
+     * Plays splashing animation and checks if last image of splashing animation is reached; if yes, stops interval
+     */
+    handleDeadAnimation() {
+        this.accelerationY = 0;
+        this.speedY = 0;
+        this.speed = 0;
+        this.playAnimation(this.IMAGES_SPLASH);
+        if (((this.currentImage - 1) % this.IMAGES_SPLASH.length) + 1 === this.IMAGES_SPLASH.length) {
+            clearInterval(this.animationInterval);
+        }
+    }
 
-
+    /** Throw bottle.
+     * @param {number} x - Start x coordinate
+     * @param {number} directionX - determines direction of throw: is 1 (to the right) or -1 (to the left)
+     * @param {number} y - Start y coordinate
+     * In addition to the parameters it sets the initial speed in x and y direction and applies gravity and a constant
+     * motion in x direction.
+     */
     throw(startX, directionX, startY) {
         this.x = startX;
         this.y = startY;

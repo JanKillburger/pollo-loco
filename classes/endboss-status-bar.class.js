@@ -1,4 +1,12 @@
+/** Represents Endboss Statusbar
+ * @extends StatusBar
+ */
 class EndbossStatusbar extends StatusBar {
+    /** Creates Endboss Status bar.
+     * Sets imgs, currentValue, capacity, position and size.
+     * @param {number} currentValue - initial Value for Statusbar.
+     * @param {number} capacity - Maximum value for statusbar.
+     */
     constructor(currentValue, capacity) {
         super([
             './img/7_statusbars/2_statusbar_endboss/0.png',
