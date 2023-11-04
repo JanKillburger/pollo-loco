@@ -41,6 +41,11 @@ class Endboss extends MovableObject {
         './img/4_enemie_boss_chicken/5_dead/G25.png',
         './img/4_enemie_boss_chicken/5_dead/G26.png'
     ];
+    isAttackingLocal = false;
+    isAttackingGlobal = false;
+    currentTarget;
+    attackDirection;
+    jumpSpeed = -50;
 
     /** Creates Endboss.
      * Loads images for animations and sounds.
@@ -54,8 +59,10 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURTING);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 700;
-        this.damage = 15;
+        this.speed = 15;
+        this.damage = 10;
         this.animate();
+        this.applyGravity();
         this.offset = { top: 20, right: 25, bottom: 20, left: 25 };
         this.chickenScream = new Audio('./audio/chickenScream.mp3');
         this.grillSound = new Audio('./audio/grillSound.mp3');
@@ -67,20 +74,53 @@ class Endboss extends MovableObject {
      */
     animate() {
         this.animationInterval = setStoppableInterval(() => {
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-                playSound(this.grillSound);
-                if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
-                    this.handleDeadState();
-                }
-            } else if (this.isHurt()) {
-                playSound(this.chickenScream);
-                this.playAnimation(this.IMAGES_HURTING);
-            } else {
-                this.playAnimation(this.IMAGES_ATTACKING);
-            }
+            this.handleAnimation();
+            this.handleMotion();
         }, globalMotionInterval);
 
+    }
+
+    handleMotion() {
+        if (this.isAttackingLocal) {
+            this.handleAttackMotion();
+        }
+    }
+
+
+    handleAnimation() {
+        if (this.isDead()) {
+            this.playAnimation(this.IMAGES_DEAD);
+            playSound(this.grillSound);
+            if (((this.currentImage - 1) % this.IMAGES_DEAD.length) + 1 === this.IMAGES_DEAD.length) {
+                this.handleDeadState();
+            }
+        } else if (this.isHurt()) {
+            playSound(this.chickenScream);
+            this.playAnimation(this.IMAGES_HURTING);
+        } else {
+            this.playAnimation(this.IMAGES_ATTACKING);
+        }
+    }
+
+    handleAttackMotion() {
+        if (this.attackDirection == 1) {
+            if (this.x < this.currentTarget) {
+                this.moveRight();
+                if (!this.isAboveGround()) this.jump(this.jumpSpeed);
+            } else { this.finishAttack(); }
+        } else {
+            if (this.x > this.currentTarget) {
+                this.moveLeft();
+                if (!this.isAboveGround()) this.jump(this.jumpSpeed);
+            } else { this.finishAttack(); }
+        }
+    }
+
+    finishAttack() {
+        this.isAttackingLocal = false;
+        setTimeout(() => {
+            this.isAttackingGlobal = false;
+        }, 2000);
     }
 
     /** Handles Dead state
@@ -89,5 +129,16 @@ class Endboss extends MovableObject {
     handleDeadState() {
         clearInterval(this.animationInterval);
         handleGameOver('success');
+    }
+
+    startAttack(targetX) {
+        this.isAttackingGlobal = true;
+        this.isAttackingLocal = true;
+        this.currentTarget = targetX;
+        if (targetX < this.x) {
+            this.attackDirection = -1;
+        } else {
+            this.attackDirection = 1;
+        }
     }
 }

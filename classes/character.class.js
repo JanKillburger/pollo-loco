@@ -84,7 +84,7 @@ class Character extends MovableObject {
         super().loadImage('./img/2_character_pepe/2_walk/W-21.png');
         this.world = world;
         this.offset = { top: 135, right: 45, bottom: 15, left: 50 };
-        this.speed = 10;
+        this.speed = 15;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);

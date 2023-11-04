@@ -24,7 +24,7 @@ class MovableObject extends DrawableObject {
      */
     applyGravity() {
         setInterval(() => {
-            if (this.isAboveGround() || this.speedY < 0 || this instanceof ThrowableObject || (this instanceof Endboss && this.isDead())) {
+            if (this.isAboveGround() || this.speedY < 0) {
                 this.y = Math.min(this.y + this.speedY, groundLevel - this.height + this.offset.bottom);
                 if (this.y + this.height - this.offset.bottom >= groundLevel) {
                     this.speedY = 0;
@@ -61,9 +61,9 @@ class MovableObject extends DrawableObject {
      * Sets the initial speedY value. Will be constantly changed by applyGravity.
      * Plays jump off sound.
      */
-    jump() {
+    jump(initialSpeed = -40) {
         this.currentImage = 0;
-        this.speedY = -40;
+        this.speedY = initialSpeed;
         if (this instanceof Character) playSound(this.jumpSound);
     }
 

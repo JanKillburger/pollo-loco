@@ -15,7 +15,7 @@ class SmallChicken extends MovableObject {
         './img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
     offset = {top: 10, right: 15, bottom: 10, left: 10};
-    damage = 5;
+    damage = 1;
 
     /** Creates small chicken.
      * Sets images for animations, sounds, speed, position, size etc.

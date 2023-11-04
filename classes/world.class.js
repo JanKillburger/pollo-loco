@@ -10,6 +10,7 @@ class World {
     availableCoins = 0;
     sounds = [];
     lastThrowDate = new Date();
+    endboss = this.level.enemies[this.level.enemies.length - 1];
     /** Create the world.
      * @param {HTMLCanvasElement} canvas - canvas element to draw the game in.
      * @param {object} keyboard - Can be used to check which controls (keyboard or touchscreen) are currently enabled/disabled.
@@ -56,6 +57,7 @@ class World {
             this.checkCollisions();
             this.checkThrows();
             this.checkCollections();
+            this.checkEndbossAttack();
         }, globalMotionInterval);
     }
 
@@ -152,6 +154,16 @@ class World {
                 if (isCollected) { this.level.collectableObjects.splice(this.level.collectableObjects.indexOf(cO), 1); }
             }
         })
+    }
+
+    /** Check distance of character to endboss.
+     * Triggers attack of endboss on character if distance falls below defined threshold
+     */
+    checkEndbossAttack() {
+        if (this.endboss.x - this.character.x < 500 && !this.endboss.isAttackingGlobal) {
+            this.endboss.startAttack(this.character.x);
+            this.level.collectableObjects.push(new Bottle(this.endboss.x, 0, groundLevel - 100, 0));
+        }
     }
 
     /** Collect coin.
