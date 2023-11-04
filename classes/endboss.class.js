@@ -58,7 +58,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_HURTING);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 700;
+        this.x = 1500;
         this.speed = 15;
         this.damage = 10;
         this.animate();
@@ -80,13 +80,16 @@ class Endboss extends MovableObject {
 
     }
 
+    /** Handle motion */
     handleMotion() {
         if (this.isAttackingLocal) {
             this.handleAttackMotion();
         }
     }
 
-
+    /** Handle animation.
+     * Differentiates dead, isHurt, attacking
+     */
     handleAnimation() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
@@ -102,20 +105,28 @@ class Endboss extends MovableObject {
         }
     }
 
+    /** Handle attack motion
+     * Differentiates between left and right attack with attackDirection property.
+     * Checks if current target has been reached.
+     * If not moves and jumps.
+     */
     handleAttackMotion() {
         if (this.attackDirection == 1) {
             if (this.x < this.currentTarget) {
+                this.oppositeDirection = true;
                 this.moveRight();
                 if (!this.isAboveGround()) this.jump(this.jumpSpeed);
             } else { this.finishAttack(); }
         } else {
             if (this.x > this.currentTarget) {
+                this.oppositeDirection = false;
                 this.moveLeft();
                 if (!this.isAboveGround()) this.jump(this.jumpSpeed);
             } else { this.finishAttack(); }
         }
     }
 
+    /** Sets isAttackingLocal and isAttackingGlobal variables to false. The latter with a delay to provide a break between attacks. */
     finishAttack() {
         this.isAttackingLocal = false;
         setTimeout(() => {
@@ -131,6 +142,11 @@ class Endboss extends MovableObject {
         handleGameOver('success');
     }
 
+
+    /** Start attack.
+     * @param {number} targetX - Position of character at start of attack.
+     * Sets the currentTarget, attackDirection and isAttackingLocal and Global variables.
+     */
     startAttack(targetX) {
         this.isAttackingGlobal = true;
         this.isAttackingLocal = true;
