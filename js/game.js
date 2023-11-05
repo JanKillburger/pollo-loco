@@ -28,6 +28,7 @@ function init() {
     endScreen.classList.remove('active');
     document.querySelector('.start-game').classList.add('d-none');
     if (usesTouchscreen) document.querySelectorAll('.mobile-control').forEach((el) => el.classList.remove('d-none'));
+    document.querySelector('.toggle-sounds').classList.remove('d-none');
 }
 
 /** Handles all actions related to end of game, like stopping animations and sounds and showing the appropriate end screen.
@@ -44,6 +45,7 @@ function handleGameOver(screenType) {
             endScreen.src = './img/9_intro_outro_screens/game_over/you lost.png';
             break;
     }
+    document.querySelector('.toggle-sounds').classList.add('d-none');
     endScreen.classList.add('active');
     document.querySelector('.start-game').classList.remove('d-none');
     if (usesTouchscreen) document.querySelectorAll('.mobile-control').forEach((el) => el.classList.add('d-none'));

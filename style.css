@@ -8,7 +8,7 @@
   /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-root {
+:root {
   font-size: 1em; /*usually evaluates to 16px; adjust to set basic font-size (xem with x = (desired basic font size in px)/(16 px); all other font-sizes in rem*/
   box-sizing: border-box;
   --scrollbar-width: 0px;
@@ -97,15 +97,16 @@ canvas.fullscreen-enabled {
   padding: 16px;
   border-radius: 32px;
   background-color: rgb(240, 164, 24);
+  box-sizing: unset;
 }
 
 .icon:active {
   background-color: rgba(240, 164, 24, 0.3);
 }
 
-#toggle-sounds {
+.toggle-sounds {
   position: absolute;
-  top: 48px;
+  top: 100px;
   right: 24px;
 }
 
