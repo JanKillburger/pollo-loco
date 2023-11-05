@@ -45,7 +45,7 @@ class Endboss extends MovableObject {
     isAttackingGlobal = false;
     currentTarget;
     attackDirection;
-    jumpSpeed = -50;
+    jumpSpeed = -60;
 
     /** Creates Endboss.
      * Loads images for animations and sounds.
@@ -63,7 +63,7 @@ class Endboss extends MovableObject {
         this.damage = 10;
         this.animate();
         this.applyGravity();
-        this.offset = { top: 20, right: 25, bottom: 20, left: 25 };
+        this.offset = { top: 30, right: 40, bottom: 30, left: 40 };
         this.chickenScream = new Audio('./audio/chickenScream.mp3');
         this.grillSound = new Audio('./audio/grillSound.mp3');
     }
@@ -131,7 +131,7 @@ class Endboss extends MovableObject {
         this.isAttackingLocal = false;
         setTimeout(() => {
             this.isAttackingGlobal = false;
-        }, 2000);
+        }, 1500);
     }
 
     /** Handles Dead state

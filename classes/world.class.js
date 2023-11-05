@@ -160,7 +160,7 @@ class World {
      * Triggers attack of endboss on character if distance falls below defined threshold
      */
     checkEndbossAttack() {
-        if (this.endboss.x - this.character.x < 500 && !this.endboss.isAttackingGlobal) {
+        if (this.endboss.x - this.character.x < 350 && !this.endboss.isAttackingGlobal) {
             this.endboss.startAttack(this.character.x);
             this.level.collectableObjects.push(new Bottle(this.endboss.x, 0, groundLevel - 100, 0));
         }

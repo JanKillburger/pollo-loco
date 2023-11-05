@@ -92,10 +92,10 @@ function calculateVerticalScrollbarWidth() {
 function toggleSounds() {
     playSounds = !playSounds;
     if (playSounds) {
-        world.character.continuousSound.play();
+        if (world) world.character.continuousSound.play();
         document.getElementById('toggle-sounds').src = './img/mute-sounds.png';
     } else {
-        world.character.continuousSound.pause();
+        if (world) world.character.continuousSound.pause();
         document.getElementById('toggle-sounds').src = './img/unmute-sounds.png';
     }
 }
