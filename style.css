@@ -94,7 +94,7 @@ canvas.fullscreen-enabled {
 
 .icon {
   width: 32px;
-  padding: 16px;
+  padding: 8px;
   border-radius: 32px;
   background-color: rgb(240, 164, 24);
   box-sizing: unset;
@@ -106,32 +106,36 @@ canvas.fullscreen-enabled {
 
 .toggle-sounds {
   position: absolute;
-  top: 100px;
-  right: 24px;
+  top: 50%;
+  transform: translate(0, -150%);
+  right: 0;
 }
 
 #mobile-left {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
+  top: 50%;
+  transform: translate(0, -50%);
+  left: 0;
 }
 
 #mobile-right {
   position: absolute;
-  bottom: 16px;
-  left: 100px;
+  top: 50%;
+  transform: translate(100%, -50%);
 }
 
 #mobile-jump {
   position: absolute;
-  bottom: 16px;
-  right: 200px;
+  top: 50%;
+  transform: translate(0, -50%);
+  right: 0;
 }
 
 #mobile-throw {
   position: absolute;
-  bottom: 16px;
-  right: 100px;
+  top: 50%;
+  transform: translate(0, 50%);
+  right: 0;
 }
 
 .start-screen-img {
