@@ -88,7 +88,7 @@ class Endboss extends MovableObject {
     }
 
     /** Handle animation.
-     * Differentiates dead, isHurt, attacking
+     * Differentiates dead, isHurt, attacking and alert
      */
     handleAnimation() {
         if (this.isDead()) {
@@ -100,9 +100,9 @@ class Endboss extends MovableObject {
         } else if (this.isHurt()) {
             playSound(this.chickenScream);
             this.playAnimation(this.IMAGES_HURTING);
-        } else {
+        } else if (this.isAttackingLocal) {
             this.playAnimation(this.IMAGES_ATTACKING);
-        }
+        } else { this.playAnimation(this.IMAGES_ALERT)}
     }
 
     /** Handle attack motion

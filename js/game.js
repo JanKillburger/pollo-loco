@@ -8,6 +8,7 @@ let gameOverScreen = new Image();
 let intervalIds = [];
 let usesTouchscreen = false;
 let playSounds = true;
+
 /** Creates World object, adds event listeners for keyboard game control and handles hiding/showing mobile control elements, start/end screen etc.
  * Is also called for re-starting the game after game over.
  */
@@ -115,8 +116,11 @@ window.addEventListener('DOMContentLoaded', calculateVerticalScrollbarWidth, fal
 window.addEventListener('resize', calculateVerticalScrollbarWidth, false);
 /** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('load', calculateVerticalScrollbarWidth, false);
-/** Event to detect touchscreen devices, sets a global variable to be used in other functions */
+/** Event to detect touchscreen devices, sets a global variable to be used in other functions, hides everything besides canvas and sets canvas to fullscreen */
 window.addEventListener('touchstart', function onFirstTouch() {
     usesTouchscreen = true;
+    this.document.querySelectorAll('.desktop-only, #toggle-fullscreen').forEach((el) => el.classList.add('d-none'));
+    this.document.getElementById('canvas').style.width = '100%';
+    this.document.getElementById('canvas').style.height = '100vh';
     window.removeEventListener('touchstart', onFirstTouch, false);
 }, false);
