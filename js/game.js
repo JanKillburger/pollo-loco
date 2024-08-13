@@ -9,6 +9,17 @@ let intervalIds = [];
 let usesTouchscreen = false;
 let playSounds = true;
 
+function preloadImages() {
+    starterImages.forEach((img) => {
+        console.log(`fetching ${img}...`)
+        const imgDummy = new Image();
+        imgDummy.src = img;
+    })
+}
+
+preloadImages();
+
+
 /** Creates World object, adds event listeners for keyboard game control and handles hiding/showing mobile control elements, start/end screen etc.
  * Is also called for re-starting the game after game over.
  */
