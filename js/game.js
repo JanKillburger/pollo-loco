@@ -8,17 +8,20 @@ let gameOverScreen = new Image();
 let intervalIds = [];
 let usesTouchscreen = false;
 let playSounds = true;
+const gameControlKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'd', ' ']
 
-function preloadImages() {
-    starterImages.forEach((img) => {
-        console.log(`fetching ${img}...`)
-        const imgDummy = new Image();
-        imgDummy.src = img;
-    })
+prefetchGameResources();
+
+function prefetchGameResources() {
+    gameResources.forEach((res) => {
+        if (res.endsWith('.mp3')) {
+            const audioDummy = new Audio(res);
+        } else {
+            const imgDummy = new Image();
+            imgDummy.src = res;
+        }
+    });
 }
-
-preloadImages();
-
 
 /** Creates World object, adds event listeners for keyboard game control and handles hiding/showing mobile control elements, start/end screen etc.
  * Is also called for re-starting the game after game over.
@@ -26,13 +29,15 @@ preloadImages();
 function init() {
     world = new World(canvas, keyboard, intervalIds);
     window.addEventListener('keydown', (event) => {
-        event.preventDefault();
+        if (gameControlKeys.includes(event.key)) {
+            event.preventDefault()
+        }
         if (!event.repeat) {
             keyboard.pressKey(event.key);
         }
     });
     window.addEventListener('keyup', (event) => {
-        event.preventDefault();
+        if (gameControlKeys.includes(event.key)) { event.preventDefault() };
         keyboard.releaseKey(event.key);
     });
     startScreen.classList.remove('active');
@@ -119,16 +124,17 @@ function playSound(sound) {
     if (playSounds) sound.play();
 }
 
-/** Prevents default actions of keydown events: required for the game to work since arrow and space keys cause issues. */
-window.addEventListener('keydown', (ev) => {
-    ev.preventDefault();
-})
 /** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('DOMContentLoaded', calculateVerticalScrollbarWidth, false);
 /** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('resize', calculateVerticalScrollbarWidth, false);
 /** Event to re-calculate scrollbar width, see called function. */
 window.addEventListener('load', calculateVerticalScrollbarWidth, false);
+window.addEventListener('load', () => {
+    const startBtn = document.querySelector('#start-game-btn');
+    startBtn.textContent = "Start game"
+    startBtn.disabled = false;
+})
 /** Event to detect touchscreen devices, sets a global variable to be used in other functions, hides everything besides canvas and sets canvas to fullscreen */
 window.addEventListener('touchstart', function onFirstTouch() {
     usesTouchscreen = true;
