@@ -29,7 +29,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 0;
-  background-image: url(./img/background-img.svg);
+  background-image: url(./img/background-img.png);
   background-size: cover;
   background-position: center;
   overflow: auto;
